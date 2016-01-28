@@ -39,7 +39,7 @@ nginx-upsync-module
 两种方式的分析对比：
 
 | - | dns | consul-template |
-| --- | --- | --- |
+| --- | :---: | :---: |
 | 实时性 | 差 | 中 |
 | 容错性 | 强 | 强 |
 | 一致性 |强 |强 |
@@ -52,9 +52,11 @@ consul-template与consul作为一个组合，consul作为db，consul-template部
 reload造成的性能影响：
 
 ![consul-template-reload-qps](https://github.com/weibocom/nginx-upsync-module/tree/master/doc/images/consul-template-reload-qps.png)
+
 在27s的时候进行的reload，nginx的请求处理能力会下降（注：nginx对于握手成功的请求不会丢失）。
 
 ![consul-template-reload-cost](https://github.com/weibocom/nginx-upsync-module/tree/master/doc/images/consul-template-reload-cost.png)
+
 同时发现reload的同时耗时会发生波动，甚至有50%+的耗时增加。
 
 基于上述的原因，设计并实现了另外两套方案，避免对nginx进行reload。
@@ -65,6 +67,7 @@ reload造成的性能影响：
 ###http_api方案
 
 此方案提供nginx http api，添加／删除server时，通过调用api向nginx发出请求，操作简单、便利。架构图如下：
+
 ![nginx-http-api-arch](https://github.com/weibocom/nginx-upsync-module/tree/master/doc/images/nginx-http-api-arch.png)
 
 http api除了操作简单、方便，而且实时性好；缺点是分布式一致性难于保证，如果某一条注册失败，便会造成服务配置的不一致，容错复杂；另一个就是如果扩容nginx服务器，需要重新注册server（可参考nginx-upconf-module，正在完善）。
@@ -149,7 +152,7 @@ work进程数：8个；
 请求量变化：
 
 | - | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | reload | 7723 | 7583 | 7833 | 7680 | 7809 | 7682 | 6924 | 7081 | 7207 | 7232 | 7486 | 7571 | 7465 |
 | upsync | 7782 | 7705| 7772 | 7810 | 7899 | 7978 | 7858 | 7934 | 7994 | 7731 | 7824 | 7648 | 7888 |
 
@@ -157,10 +160,10 @@ work进程数：8个；
 
 平均耗时变化：
 
-| |0|1|2|3|4|5|6|7|8|9|10|11|12|
-|---|---|---|---|---|---|---|---|---|---|---|---|
-|reload|12.102|15.108|11.443|9.426|10.178|10.605|15.253|14.315|14.762|8.392|14.385|32.335|15.277|
-|upsync|9.586|11.963|8.694|9.676|10.616|10.335|9.766|9.406|8.943|10.971|8.080|9.185|12.055|
+| - | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| reload | 12.102 | 15.108 | 11.443 | 9.426 | 10.178 | 10.605 | 15.253 | 14.315 | 14.762 | 8.392 | 14.385 | 32.335 | 15.277 |
+| upsync | 9.586 | 11.963 | 8.694 | 9.676 | 10.616 | 10.335 | 9.766 | 9.406 | 8.943 | 10.971 | 8.080 | 9.185 | 12.055 |
 
 ![upsync-vs-reload-cost](https://github.com/weibocom/nginx-upsync-module/tree/master/doc/images/upsync-vs-reload-cost.png)
 
