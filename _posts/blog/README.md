@@ -156,7 +156,7 @@ work进程数：8个；
 | reload | 7723 | 7583 | 7833 | 7680 | 7809 | 7682 | 6924 | 7081 | 7207 | 7232 | 7486 | 7571 | 7465 |
 | upsync | 7782 | 7705| 7772 | 7810 | 7899 | 7978 | 7858 | 7934 | 7994 | 7731 | 7824 | 7648 | 7888 |
 
-![reload vs upsync](https://github.com/weibocom/nginx-upsync-module/tree/master/doc/images/upsync-vs-reload-qps.png)
+![reload vs upsync](https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/upsync-vs-reload-qps.png)
 
 #####平均耗时变化：
 
