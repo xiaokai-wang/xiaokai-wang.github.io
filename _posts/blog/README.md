@@ -36,7 +36,7 @@ nginx-upsync-module
 
 实现nginx层的弹性扩容、缩容，当前业界已存在的、不需二次开发的有基于consul的consul-template和tengine提供的基于dns的服务发现。
 
-####两种方式的分析对比：
+#####两种方式的分析对比：
 
 | - | dns | consul-template |
 | --- | :---: | :---: |
@@ -51,7 +51,7 @@ consul-template与consul作为一个组合，consul作为db，consul-template部
 
 reload造成的性能影响：
 
-![consul-template-reload-qps](https://github.com/weibocom/nginx-upsync-module/doc/images/consul-template-reload-qps.png)
+![consul-template-reload-qps](https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/consul-template-reload-qps.png)
 
 在27s的时候进行的reload，nginx的请求处理能力会下降（注：nginx对于握手成功的请求不会丢失）。
 
@@ -125,7 +125,7 @@ nginx启动时，master进程首先会解析本地的配置文件，解析完成
 
 nginx-upsync-module模块，潜在的带来额外的性能开销，比如间隔性的向consul发送请求，由于间隔比较久，且每个请求相当于nginx的一个客户端请求，所以影响有限。基于此，在相同的硬件环境下，使用此模块和不使用此模块简单做了性能对比。
 
-####基本环境：
+#####基本环境：
 
 ```
 硬件环境：Intel(R) Xeon(R) CPU E5645 @ 2.40GHz 12 核 
@@ -135,7 +135,7 @@ work进程数：8个；
 压测命令：./wrk -t8 -c100 -d5m --timeout 3s http://$ip:8888/proxy_test
 ```
 
-####压测数据：
+#####压测数据：
 
 | - | 总请求 | qps |
 | --- | --- | --- |
@@ -149,7 +149,7 @@ work进程数：8个；
 
 本模块首先应用于平台的remind业务，qps量约为7000+左右。下面是对本业务灰度的基本数据：
 
-####请求量变化：
+#####请求量变化：
 
 | - | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -158,7 +158,7 @@ work进程数：8个；
 
 ![reload vs upsync](https://github.com/weibocom/nginx-upsync-module/tree/master/doc/images/upsync-vs-reload-qps.png)
 
-####平均耗时变化：
+#####平均耗时变化：
 
 | - | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -171,11 +171,9 @@ work进程数：8个；
 
 平台为了应对元旦期间的流量峰值，基于本平台的dcp系统，于元旦晚上批量部署阿里云实例，应用此模块进行了百余次的扩容、缩容操作，服务稳定，没有出现服务的波动。另本模块可以应用于对资源的弹性调度系统内，同时可以应用于临时流量突增的场景。
 
-####参考附录：
-```
+#####参考附录：
 [1] http://tengine.taobao.org/document_cn/http_upstream_dynamic_cn.html;
 [2] https://www.hashicorp.com/blog/introducing-consul-template.html;
 [3] https://www.nginx.com/blog/dynamic-reconfiguration-with-nginx-plus;
 [4] https://github.com/alibaba/tengine/issues/595;
 [5] https://github.com/xiaokai-wang/nginx-upconf-module;
-```
