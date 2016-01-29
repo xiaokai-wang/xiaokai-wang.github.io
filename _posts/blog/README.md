@@ -69,7 +69,7 @@ reload造成的性能影响：
 
 此方案提供nginx http api，添加／删除server时，通过调用api向nginx发出请求，操作简单、便利。架构图如下：
 
-<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/nginx-http-api-arch.png" alt="nginx-http-api-arch" height="60%" width="50%">
+<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/nginx-http-api-arch.png" alt="nginx-http-api-arch" height="50%" width="40%">
 
 http api除了操作简单、方便，而且实时性好；缺点是分布式一致性难于保证，如果某一条注册失败，便会造成服务配置的不一致，容错复杂；另一个就是如果扩容nginx服务器，需要重新注册server（可参考nginx-upconf-module，正在完善）。
 
