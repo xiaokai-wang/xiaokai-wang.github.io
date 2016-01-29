@@ -77,7 +77,7 @@ http api除了操作简单、方便，而且实时性好；缺点是分布式一
 
 upsync方式引入了第三方组件，作为nginx的upstream server配置的db，架构图如下：
 
-<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/nginx-upsync-arch.png" alt="nginx-upsync-arch" height="80%" width="60%">
+<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/nginx-upsync-arch.png" alt="nginx-upsync-arch" height="80%" width="50%">
 
 所有的后端server列表存于consul，便于nginx横向扩展，实时拉取，容错性更好，而且可以结合db的KV服务，提高实时性。
 
