@@ -69,7 +69,7 @@ reload造成的性能影响：
 
 此方案提供nginx http api，添加／删除server时，通过调用api向nginx发出请求，操作简单、便利。架构图如下：
 
-<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/nginx-http-api-arch.png" alt="nginx-http-api-arch" height="50%" width="30%">
+<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/nginx-http-api-arch.png" alt="nginx-http-api-arch" height="50%" width="40%">
 
 http api除了操作简单、方便，而且实时性好；缺点是分布式一致性难于保证，如果某一条注册失败，便会造成服务配置的不一致，容错复杂；另一个就是如果扩容nginx服务器，需要重新注册server（可参考nginx-upconf-module，正在完善）。
 
@@ -77,7 +77,7 @@ http api除了操作简单、方便，而且实时性好；缺点是分布式一
 
 upsync方式引入了第三方组件，作为nginx的upstream server配置的db，架构图如下：
 
-<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/nginx-upsync-arch.png" alt="nginx-upsync-arch" height="80%" width="50%">
+<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/nginx-upsync-arch.png" alt="nginx-upsync-arch" height="80%" width="60%">
 
 所有的后端server列表存于consul，便于nginx横向扩展，实时拉取，容错性更好，而且可以结合db的KV服务，提高实时性。
 
