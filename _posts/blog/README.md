@@ -51,11 +51,11 @@ consul-template与consul作为一个组合，consul作为db，consul-template部
 
 reload造成的性能影响：
 
-<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/consul-template-reload-qps.png" alt="consul-template-reload-qps" height="80%" width="60%">
+<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/consul-template-reload-qps.png" alt="consul-template-reload-qps" height="70%" width="60%">
 ```
 图示：reload时nginx的请求处理能力会下降（注：nginx对于握手成功的请求不会丢失）
 ```
-<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/consul-template-reload-cost.png" alt="consul-template-reload-cost" height="80%" width="60%">
+<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/consul-template-reload-cost.png" alt="consul-template-reload-cost" height="70%" width="60%">
 ```
 图示：reload时耗时会发生波动，波动幅度甚至达50%+
 ```
@@ -69,7 +69,7 @@ reload造成的性能影响：
 
 此方案提供nginx http api，添加／删除server时，通过调用api向nginx发出请求，操作简单、便利。架构图如下：
 
-<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/nginx-http-api-arch.png" alt="nginx-http-api-arch" height="80%" width="60%">
+<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/nginx-http-api-arch.png" alt="nginx-http-api-arch" height="60%" width="50%">
 
 http api除了操作简单、方便，而且实时性好；缺点是分布式一致性难于保证，如果某一条注册失败，便会造成服务配置的不一致，容错复杂；另一个就是如果扩容nginx服务器，需要重新注册server（可参考nginx-upconf-module，正在完善）。
 
