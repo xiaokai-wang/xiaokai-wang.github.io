@@ -51,7 +51,7 @@ consul-template与consul作为一个组合，consul作为db，consul-template部
 
 reload造成的性能影响：
 
-![consul-template-reload-qps](https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/consul-template-reload-qps.png)
+<img src="https://github.com/weibocom/nginx-upsync-module/raw/master/doc/images/consul-template-reload-qps.png" alt="consul-template-reload-qps" style="max-width:60%;">
 ```
 图示：reload时nginx的请求处理能力会下降（注：nginx对于握手成功的请求不会丢失）
 ```
