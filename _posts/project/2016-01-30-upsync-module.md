@@ -1,3 +1,10 @@
+---
+layout: post
+title: nginx-upsync-module
+category: project
+description: syncing upstreams from consul or etcd or others.
+---
+
 nginx-upsync-module
 ====
 
@@ -171,6 +178,8 @@ work进程数：8个；
 从数据可以得出，reload操作时造成nginx的请求处理能力下降约10%，nginx本身的耗时会增长50%+。若是频繁的扩容缩容，reload操作造成的开销会更加明显。
 
 平台为了应对元旦期间的流量峰值，基于本平台的dcp系统，于元旦晚上批量部署阿里云实例，应用此模块进行了百余次的扩容、缩容操作，服务稳定，没有出现服务的波动。另本模块可以应用于对资源的弹性调度系统内，同时可以应用于临时流量突增的场景。
+
+模块地址：https://github.com/weibocom/nginx-upsync-module; 欢迎使用，欢迎探讨！
 
 #####参考附录：
 [1] http://tengine.taobao.org/document_cn/http_upstream_dynamic_cn.html;
