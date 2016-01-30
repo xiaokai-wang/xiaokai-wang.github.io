@@ -36,11 +36,11 @@ description: syncing upstreams from consul or etcd or others.
 
 #####两种方式的分析对比：
 
-    -   dns consul-template
-    实时性  差  中
-    容错性  强  强
-    一致性  强  强
-    复杂性  易  繁
+-,dns,consul-template
+实时性,差,中
+容错性,强,强
+一致性,强,强
+复杂性,易,繁
 
 tengine团队开发了自己的模块，该模块可以动态的解析upstream conf下的域名。这种方式操作简单，只要修改dns下挂载的server列表便可；缺点是现在的第一版负载均衡策略待完善；另一点默认解析一次的时间是30s，若配置的时间过短，可能对dns server形成压力；再一点是基于dns的服务，下面不能挂过多的server，否则会发生截断。
 
@@ -162,11 +162,11 @@ work进程数：8个；
 
 平台为了应对元旦期间的流量峰值，基于本平台的dcp系统，于元旦晚上批量部署阿里云实例，应用此模块进行了百余次的扩容、缩容操作，服务稳定，没有出现服务的波动。另本模块可以应用于对资源的弹性调度系统内，同时可以应用于临时流量突增的场景。
 
-模块地址：[Github](https://github.com/weibocom/nginx-upsync-module), 欢迎使用，欢迎探讨！
+模块地址：[nginx-upsync-module](https://github.com/weibocom/nginx-upsync-module), 欢迎使用，欢迎探讨！
 
 #####参考附录：
-[1]: http://tengine.taobao.org/document_cn/http_upstream_dynamic_cn.html;
-[2]: https://www.hashicorp.com/blog/introducing-consul-template.html;
-[3]: https://www.nginx.com/blog/dynamic-reconfiguration-with-nginx-plus;
-[4]: https://github.com/alibaba/tengine/issues/595;
-[5]: https://github.com/xiaokai-wang/nginx-upconf-module;
+[1] http://tengine.taobao.org/document_cn/http_upstream_dynamic_cn.html;
+[2] https://www.hashicorp.com/blog/introducing-consul-template.html;
+[3] https://www.nginx.com/blog/dynamic-reconfiguration-with-nginx-plus;
+[4] https://github.com/alibaba/tengine/issues/595;
+[5] https://github.com/xiaokai-wang/nginx-upconf-module;
