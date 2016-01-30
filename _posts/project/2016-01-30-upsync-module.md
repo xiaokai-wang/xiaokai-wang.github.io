@@ -36,11 +36,12 @@ description: syncing upstreams from consul or etcd or others.
 
 #####两种方式的分析对比：
 
--,dns,consul-template
-实时性,差,中
-容错性,强,强
-一致性,强,强
-复杂性,易,繁
+- | dns | consul-template
+--- | ---| ---
+实时性 | 差 | 中
+容错性 | 强 | 强
+一致性 | 强 | 强
+复杂性 | 易 | 繁
 
 tengine团队开发了自己的模块，该模块可以动态的解析upstream conf下的域名。这种方式操作简单，只要修改dns下挂载的server列表便可；缺点是现在的第一版负载均衡策略待完善；另一点默认解析一次的时间是30s，若配置的时间过短，可能对dns server形成压力；再一点是基于dns的服务，下面不能挂过多的server，否则会发生截断。
 
