@@ -21,7 +21,7 @@ layout: default
   </div>
 </article>
 
-{% assign related = site.categories[page.category] | sort: "date" | reverse %}
+{% assign related = site.posts | where: "category", page.category | sort: "date" | reverse %}
 {% assign shown = 0 %}
 {% for post in related %}
   {% if post.url != page.url and shown < 2 %}
