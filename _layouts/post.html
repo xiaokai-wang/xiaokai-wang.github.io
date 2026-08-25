@@ -42,9 +42,49 @@ layout: default
     </aside>
 {% endif %}
 
-{% if site.comments.disqus.short_name %}
-<div class="comments">
-  <button id="load-comments" data-disqus="{{ site.comments.disqus.short_name }}">加载评论（Disqus）</button>
-  <div id="disqus_thread"></div>
-</div>
+{% if site.comments.disqus.short_name or site.comments.giscus.repo %}
+<section class="comments">
+  <h2 class="comments-title">评论</h2>
+  <p class="comments-hint">可任选一种方式留言：<em>匿名 / Disqus 社交登录</em> 或 <em>GitHub 登录</em>。</p>
+
+  {% if site.comments.disqus.short_name %}
+  <div class="comments-block comments-disqus">
+    <h3>Disqus — 匿名 / Google / Facebook / Twitter</h3>
+    <div id="disqus_thread" data-disqus="{{ site.comments.disqus.short_name }}"></div>
+  </div>
+  {% endif %}
+
+  {% if site.comments.giscus.repo %}
+    {% if site.comments.giscus.repo_id != "" and site.comments.giscus.category_id != "" %}
+  <div class="comments-block comments-giscus">
+    <h3>GitHub 登录评论（giscus）</h3>
+    <script src="https://giscus.app/client.js"
+      data-repo="{{ site.comments.giscus.repo }}"
+      data-repo-id="{{ site.comments.giscus.repo_id }}"
+      data-category="{{ site.comments.giscus.category }}"
+      data-category-id="{{ site.comments.giscus.category_id }}"
+      data-mapping="pathname"
+      data-strict="1"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="{{ site.comments.giscus.lang | default: 'zh-CN' }}"
+      crossorigin="anonymous"
+      async></script>
+  </div>
+    {% else %}
+  <div class="comments-block comments-giscus-setup">
+    <h3>GitHub 登录评论（giscus · 待配置）</h3>
+    <p>giscus 尚未完成配置，请按以下步骤启用：</p>
+    <ol>
+      <li>在仓库 <code>{{ site.comments.giscus.repo }}</code> 开启 <strong>Discussions</strong>（Settings → General → Features → Discussions）</li>
+      <li>安装 <a href="https://github.com/apps/giscus" target="_blank" rel="noopener">giscus GitHub App</a> 到该仓库</li>
+      <li>访问 <a href="https://giscus.app/zh-CN" target="_blank" rel="noopener">giscus.app</a> 选择该仓库，复制生成的 <code>data-repo-id</code> 与 <code>data-category-id</code></li>
+      <li>填入 <code>_config.yml</code> 的 <code>comments.giscus</code> 段并推送</li>
+    </ol>
+  </div>
+    {% endif %}
+  {% endif %}
+</section>
 {% endif %}

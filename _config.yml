@@ -17,3 +17,16 @@ comments:
   provider: disqus
   disqus:
     short_name: xiaokaiwang
+
+  # giscus：基于 GitHub Discussions 的评论系统，评论需 GitHub 登录。
+  # 启用步骤：
+  #   1) 在指定仓库开启 Discussions（Settings → General → Features → Discussions）
+  #   2) 安装 giscus GitHub App：https://github.com/apps/giscus
+  #   3) 在 https://giscus.app/zh-CN 选择该仓库与分类，复制 data-repo-id 与 data-category-id
+  #   4) 把下面的 repo_id / category_id 填上并推送
+  giscus:
+    repo: xiaokai-wang/xiaokai-wang.github.io   # 也可换成独立评论仓库，如 xiaokai-wang/comments
+    repo_id: ""                                   # 填入 giscus.app 给出的 ID
+    category: "General"                            # 讨论分类名
+    category_id: ""                               # 填入 giscus.app 给出的 ID
+    lang: zh-CN

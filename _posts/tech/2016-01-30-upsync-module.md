@@ -166,12 +166,8 @@ work进程数：8个；
 模块地址：[nginx-upsync-module](https://github.com/weibocom/nginx-upsync-module), 欢迎使用，欢迎探讨！
 
 ##### 参考附录：
-[1] http://tengine.taobao.org/document_cn/http_upstream_dynamic_cn.html;
-
-[2] https://www.hashicorp.com/blog/introducing-consul-template.html;
-
-[3] https://www.nginx.com/blog/dynamic-reconfiguration-with-nginx-plus;
-
-[4] https://github.com/alibaba/tengine/issues/595;
-
-[5] https://github.com/xiaokai-wang/nginx-upconf-module;
+[1] <http://tengine.taobao.org/document_cn/http_upstream_dynamic_cn.html>;
+[2] <https://www.hashicorp.com/blog/introducing-consul-template.html>;
+[3] <https://www.nginx.com/blog/dynamic-reconfiguration-with-nginx-plus>;
+[4] <https://github.com/alibaba/tengine/issues/595>;
+[5] <https://github.com/xiaokai-wang/nginx-upconf-module>;
