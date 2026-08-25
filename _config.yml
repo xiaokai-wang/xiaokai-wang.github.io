@@ -6,9 +6,9 @@ paginate: 8
 permalink: /:title
 
 title: Xiaokai.wang blog
-url: http://xiaokai-wang.github.io
+url: https://xiaokai-wang.github.io
 feed: /atom.xml
-author_info: <a href="http://xiaokai-wang.github.io/">Xiaokai.wang</a>
+author_info: <a href="https://xiaokai-wang.github.io/">Xiaokai.wang</a>
 
 comments :
 
