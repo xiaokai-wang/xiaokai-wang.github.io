@@ -1,8 +1,8 @@
 ---
 layout: post
-title: feeling
+title: 标题
 category: opinion
-description: simple
+description: 一句话摘要，会显示在列表页。
 ---
 
-[Xiaokai]:    https://xiaokai-wang.github.io  "Xiaokai Wang"
+正文内容。

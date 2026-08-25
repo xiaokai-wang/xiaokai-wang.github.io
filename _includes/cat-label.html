@@ -1,0 +1,9 @@
+{% case include.cat %}
+  {% when 'life' %}生活
+  {% when 'photos' %}照片
+  {% when 'opinion' %}观点
+  {% when 'tech' %}技术
+  {% when 'blog' %}博客
+  {% when 'project' %}项目
+  {% else %}{{ include.cat }}
+{% endcase %}

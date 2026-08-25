@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="fsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c9dcd0"/>
+      <stop offset="100%" stop-color="#eef2ec"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#fsky)"/>
+  <g fill="#8fb3a0" opacity="0.35">
+    <polygon points="120,420 90,420 105,320"/>
+    <polygon points="180,420 150,420 165,300"/>
+    <polygon points="640,420 610,420 625,310"/>
+    <polygon points="700,420 670,420 685,330"/>
+  </g>
+  <g fill="#5f8a72">
+    <polygon points="200,480 155,480 178,300"/>
+    <polygon points="260,480 215,480 238,270"/>
+    <polygon points="330,480 285,480 308,320"/>
+    <polygon points="560,480 515,480 538,290"/>
+    <polygon points="630,480 585,480 608,330"/>
+  </g>
+  <g fill="#3f6b54">
+    <polygon points="90,600 45,600 68,420"/>
+    <polygon points="170,600 125,600 148,380"/>
+    <polygon points="250,600 205,600 228,340"/>
+    <polygon points="330,600 285,600 308,400"/>
+    <polygon points="410,600 365,600 388,360"/>
+    <polygon points="490,600 445,600 468,390"/>
+    <polygon points="570,600 525,600 548,350"/>
+    <polygon points="650,600 605,600 628,410"/>
+    <polygon points="730,600 685,600 708,370"/>
+  </g>
+  <!-- trunks -->
+  <g fill="#5c4a3a">
+    <rect x="66" y="580" width="5" height="20"/>
+    <rect x="146" y="570" width="5" height="30"/>
+    <rect x="226" y="560" width="5" height="40"/>
+    <rect x="306" y="575" width="5" height="25"/>
+    <rect x="386" y="565" width="5" height="35"/>
+    <rect x="466" y="572" width="5" height="28"/>
+    <rect x="546" y="558" width="5" height="42"/>
+    <rect x="626" y="576" width="5" height="24"/>
+    <rect x="706" y="562" width="5" height="38"/>
+  </g>
+  <!-- mist bands -->
+  <rect x="0" y="470" width="800" height="34" fill="#ffffff" opacity="0.35"/>
+  <rect x="0" y="520" width="800" height="22" fill="#ffffff" opacity="0.25"/>
+  <rect x="0" y="430" width="800" height="16" fill="#ffffff" opacity="0.3"/>
+</svg>

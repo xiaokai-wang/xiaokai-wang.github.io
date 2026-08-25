@@ -1,7 +1,7 @@
 ---
 layout: post
 title: nginx-upsync-module
-category: project
+category: tech
 description: syncing upstreams from consul or etcd or others.
 ---
 

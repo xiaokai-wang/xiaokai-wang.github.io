@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="55%" stop-color="#7c9cb8"/>
+      <stop offset="100%" stop-color="#e8c9a0"/>
+    </linearGradient>
+    <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d5a73"/>
+      <stop offset="100%" stop-color="#2a4054"/>
+    </linearGradient>
+    <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5a7891"/>
+      <stop offset="100%" stop-color="#40586c"/>
+    </linearGradient>
+    <linearGradient id="m3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8aa5b8"/>
+      <stop offset="100%" stop-color="#6b8299"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#sky)"/>
+  <circle cx="560" cy="330" r="46" fill="#f5e6c8" opacity="0.95"/>
+  <circle cx="560" cy="330" r="70" fill="#f5e6c8" opacity="0.15"/>
+  <!-- far mountains -->
+  <path d="M0,420 L120,300 L200,360 L300,260 L410,380 L500,310 L620,400 L720,330 L800,390 L800,600 L0,600 Z" fill="url(#m3)"/>
+  <!-- mid mountains -->
+  <path d="M0,470 L100,380 L220,440 L340,340 L460,450 L580,380 L700,450 L800,410 L800,600 L0,600 Z" fill="url(#m2)" opacity="0.96"/>
+  <!-- near mountains -->
+  <path d="M0,520 L140,430 L260,500 L400,410 L540,510 L660,450 L800,500 L800,600 L0,600 Z" fill="url(#m1)"/>
+  <!-- mist -->
+  <rect x="0" y="430" width="800" height="60" fill="#dfe9f0" opacity="0.18"/>
+  <rect x="0" y="470" width="800" height="40" fill="#dfe9f0" opacity="0.12"/>
+  <!-- snow caps -->
+  <path d="M300,260 L330,290 L310,292 L322,306 L288,300 Z" fill="#e9eef2" opacity="0.85"/>
+  <path d="M340,340 L365,365 L345,362 L352,375 L325,368 Z" fill="#e9eef2" opacity="0.6"/>
+</svg>

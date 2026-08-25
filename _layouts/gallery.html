@@ -1,0 +1,41 @@
+---
+layout: default
+---
+
+<div class="container">
+
+  <header class="category-hero c-photos anim">
+    <span class="cat-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+    </span>
+    <div>
+      <h1>{{ page.title }}</h1>
+      <p class="cat-desc">{{ page.description }}</p>
+      <div class="cat-meta">
+        <span>{% assign cat_posts = site.categories[page.category] | sort: "date" | reverse %}共 {{ cat_posts | size }} 组照片</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="cat-rule"></div>
+
+  <div class="gallery-grid">
+    {% for post in cat_posts %}
+    <a class="gallery-item anim d{{ forloop.index | modulo: 4 | plus: 1 }}" href="{{ post.url }}">
+      {% if post.image %}
+      <img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy" />
+      {% endif %}
+      <div class="gallery-caption">
+        <h3>{{ post.title }}</h3>
+        <span>{{ post.date | date: "%Y-%m-%d" }}</span>
+      </div>
+    </a>
+    {% else %}
+    <article class="post-card anim">
+      <h3>这里还没有照片</h3>
+      <p class="post-desc">在 <code>_posts/photos/</code> 目录下新建带 <code>image:</code> 字段的文章即可出现在这里。</p>
+    </article>
+    {% endfor %}
+  </div>
+
+</div>

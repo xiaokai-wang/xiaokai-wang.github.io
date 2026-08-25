@@ -1,0 +1,38 @@
+---
+layout: default
+---
+
+<div class="container">
+
+  <header class="category-hero c-{{ page.category }} anim">
+    <span class="cat-icon">{{ page.icon }}</span>
+    <div>
+      <h1>{{ page.title }}</h1>
+      <p class="cat-desc">{{ page.description }}</p>
+      <div class="cat-meta">
+        <span>{% assign cat_posts = site.categories[page.category] | sort: "date" | reverse %}共 {{ cat_posts | size }} 篇</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="cat-rule"></div>
+
+  <div class="post-list">
+    {% for post in cat_posts %}
+    <article class="post-card c-{{ post.category }} anim d{{ forloop.index | modulo: 4 | plus: 1 }}">
+      <div class="post-card-top">
+        <time class="post-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+        <a class="badge" href="{{ post.url }}">阅读全文 &rarr;</a>
+      </div>
+      <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+      {% if post.description %}<p class="post-desc">{{ post.description }}</p>{% endif %}
+    </article>
+    {% else %}
+    <article class="post-card anim">
+      <h3>这里还没有内容</h3>
+      <p class="post-desc">在 <code>_posts/{{ page.category }}/</code> 目录下新建文章即可出现在这里。</p>
+    </article>
+    {% endfor %}
+  </div>
+
+</div>

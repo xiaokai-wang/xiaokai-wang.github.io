@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="csky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b1026"/>
+      <stop offset="70%" stop-color="#1c2b50"/>
+      <stop offset="100%" stop-color="#31437a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#csky)"/>
+  <!-- stars -->
+  <g fill="#ffffff">
+    <circle cx="90" cy="70" r="1.6" opacity="0.9"/>
+    <circle cx="200" cy="40" r="1.1" opacity="0.6"/>
+    <circle cx="310" cy="95" r="1.4" opacity="0.8"/>
+    <circle cx="430" cy="55" r="1.2" opacity="0.7"/>
+    <circle cx="540" cy="110" r="1.7" opacity="0.9"/>
+    <circle cx="660" cy="65" r="1.2" opacity="0.6"/>
+    <circle cx="740" cy="130" r="1.5" opacity="0.8"/>
+    <circle cx="150" cy="150" r="1.2" opacity="0.5"/>
+    <circle cx="380" cy="160" r="1.1" opacity="0.5"/>
+    <circle cx="600" cy="35" r="1.3" opacity="0.7"/>
+    <circle cx="60" cy="200" r="1.1" opacity="0.5"/>
+    <circle cx="720" cy="220" r="1.2" opacity="0.5"/>
+  </g>
+  <!-- moon -->
+  <circle cx="680" cy="105" r="34" fill="#f4f0e0" opacity="0.95"/>
+  <circle cx="668" cy="97" r="6" fill="#ddd8c4" opacity="0.5"/>
+  <circle cx="690" cy="115" r="4" fill="#ddd8c4" opacity="0.4"/>
+  <!-- skyline far -->
+  <g fill="#1a2440">
+    <rect x="0" y="380" width="70" height="220"/>
+    <rect x="80" y="410" width="55" height="190"/>
+    <rect x="145" y="360" width="65" height="250"/>
+    <rect x="220" y="430" width="80" height="170"/>
+    <rect x="310" y="390" width="60" height="210"/>
+    <rect x="380" y="340" width="75" height="260"/>
+    <rect x="465" y="420" width="60" height="180"/>
+    <rect x="535" y="370" width="70" height="230"/>
+    <rect x="615" y="400" width="55" height="200"/>
+    <rect x="680" y="350" width="65" height="250"/>
+    <rect x="755" y="390" width="45" height="210"/>
+  </g>
+  <!-- skyline near -->
+  <g fill="#111830">
+    <rect x="30" y="450" width="90" height="150"/>
+    <rect x="140" y="470" width="75" height="130"/>
+    <rect x="250" y="440" width="100" height="160"/>
+    <rect x="390" y="465" width="85" height="135"/>
+    <rect x="500" y="445" width="95" height="155"/>
+    <rect x="630" y="470" width="80" height="130"/>
+    <rect x="730" y="450" width="70" height="150"/>
+  </g>
+  <!-- antenna -->
+  <rect x="417" y="300" width="4" height="40" fill="#111830"/>
+  <circle cx="419" cy="296" r="4" fill="#ff6b6b" opacity="0.9"/>
+  <!-- windows far -->
+  <g fill="#ffd97a" opacity="0.85">
+    <rect x="12" y="400" width="8" height="10"/>
+    <rect x="30" y="420" width="8" height="10"/>
+    <rect x="48" y="395" width="8" height="10"/>
+    <rect x="158" y="380" width="8" height="10"/>
+    <rect x="176" y="410" width="8" height="10"/>
+    <rect x="395" y="360" width="8" height="10"/>
+    <rect x="415" y="395" width="8" height="10"/>
+    <rect x="435" y="370" width="8" height="10"/>
+    <rect x="695" y="370" width="8" height="10"/>
+    <rect x="715" y="400" width="8" height="10"/>
+    <rect x="550" y="390" width="8" height="10"/>
+    <rect x="570" y="420" width="8" height="10"/>
+  </g>
+  <!-- windows near -->
+  <g fill="#ffcf5c">
+    <rect x="50" y="470" width="10" height="12"/>
+    <rect x="72" y="495" width="10" height="12"/>
+    <rect x="94" y="470" width="10" height="12"/>
+    <rect x="165" y="490" width="10" height="12"/>
+    <rect x="187" y="515" width="10" height="12"/>
+    <rect x="272" y="465" width="10" height="12"/>
+    <rect x="294" y="492" width="10" height="12"/>
+    <rect x="316" y="465" width="10" height="12"/>
+    <rect x="410" y="490" width="10" height="12"/>
+    <rect x="432" y="515" width="10" height="12"/>
+    <rect x="520" y="470" width="10" height="12"/>
+    <rect x="542" y="498" width="10" height="12"/>
+    <rect x="564" y="470" width="10" height="12"/>
+    <rect x="650" y="492" width="10" height="12"/>
+    <rect x="672" y="518" width="10" height="12"/>
+    <rect x="750" y="472" width="10" height="12"/>
+  </g>
+  <!-- water reflection -->
+  <rect y="565" width="800" height="35" fill="#0d1530"/>
+  <g fill="#ffd97a" opacity="0.25">
+    <rect x="100" y="572" width="40" height="3"/>
+    <rect x="300" y="578" width="60" height="3"/>
+    <rect x="520" y="572" width="45" height="3"/>
+    <rect x="680" y="580" width="50" height="3"/>
+  </g>
+</svg>

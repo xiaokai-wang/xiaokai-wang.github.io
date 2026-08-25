@@ -1,19 +1,19 @@
-auto: true
-
-markdown: rdiscount
-pygments: true
-paginate: 8
+title: Xiaokai Wang
+author: Xiaokai Wang
+description: Xiaokai Wang 的个人主页 · 生活、照片、观点与技术
+url: https://xiaokai-wang.github.io
 permalink: /:title
 
-title: Xiaokai.wang blog
-url: https://xiaokai-wang.github.io
-feed: /atom.xml
-author_info: <a href="https://xiaokai-wang.github.io/">Xiaokai.wang</a>
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
 
-comments :
+email: xiaokai.wang@live.com
+github: xiaokai-wang
 
-provider : disqus
-
-disqus :
-
-short_name : xiaokaiwang
+comments:
+  provider: disqus
+  disqus:
+    short_name: xiaokaiwang
