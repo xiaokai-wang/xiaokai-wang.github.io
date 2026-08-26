@@ -37,34 +37,96 @@
     else if (mq.addListener) { mq.addListener(onChange); }
   }
 
-  /* auto-load Disqus comments on page load */
-  function bootDisqus() {
-    var thread = document.getElementById("disqus_thread");
-    if (!thread) { return; }
-    var shortname = thread.getAttribute("data-disqus");
-    if (!shortname) { return; }
-    var s = document.createElement("script");
-    s.async = true;
-    s.src = "https://" + shortname + ".disqus.com/embed.js";
-    s.setAttribute("data-timestamp", +new Date());
-    (document.head || document.body).appendChild(s);
-  }
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", bootDisqus);
-  } else {
-    bootDisqus();
+  /* comment system chooser: tab switch with lazy load + remember last choice */
+  function initCommentTabs() {
+    var tabs = document.querySelectorAll(".comments-tab");
+    if (!tabs.length) { return; }
+
+    var STORAGE_KEY = "preferredCommentTab";
+    var savedTab = null;
+    try { savedTab = localStorage.getItem(STORAGE_KEY); } catch (e) { /* noop */ }
+
+    function activate(tabId) {
+      var activated = false;
+      tabs.forEach(function (t) {
+        var active = t.id === tabId;
+        t.setAttribute("aria-selected", active ? "true" : "false");
+        t.classList.toggle("is-active", active);
+        var panel = document.getElementById(t.getAttribute("data-target"));
+        if (!panel) { return; }
+        if (active) {
+          panel.removeAttribute("hidden");
+          if (t.id === "tab-disqus") { loadDisqus(panel); }
+          if (t.id === "tab-giscus") { loadGiscus(panel); }
+          activated = true;
+        } else {
+          panel.setAttribute("hidden", "");
+        }
+      });
+      if (activated) {
+        try { localStorage.setItem(STORAGE_KEY, tabId); } catch (e) { /* noop */ }
+      }
+    }
+
+    function loadDisqus(panel) {
+      var thread = panel.querySelector("#disqus_thread");
+      if (!thread || thread.getAttribute("data-loaded")) { return; }
+      var shortname = thread.getAttribute("data-disqus");
+      if (!shortname) { return; }
+      var s = document.createElement("script");
+      s.async = true;
+      s.src = "https://" + shortname + ".disqus.com/embed.js";
+      s.setAttribute("data-timestamp", +new Date());
+      (document.head || document.body).appendChild(s);
+      thread.setAttribute("data-loaded", "1");
+    }
+
+    function loadGiscus(panel) {
+      if (panel.getAttribute("data-loaded")) { return; }
+      var s = document.createElement("script");
+      s.src = "https://giscus.app/client.js";
+      s.async = true;
+      s.crossOrigin = "anonymous";
+      s.setAttribute("data-repo",            panel.getAttribute("data-giscus-repo") || "");
+      s.setAttribute("data-repo-id",         panel.getAttribute("data-giscus-repo-id") || "");
+      s.setAttribute("data-category",        panel.getAttribute("data-giscus-category") || "General");
+      s.setAttribute("data-category-id",     panel.getAttribute("data-giscus-category-id") || "");
+      s.setAttribute("data-mapping",         "pathname");
+      s.setAttribute("data-strict",          "1");
+      s.setAttribute("data-reactions-enabled","1");
+      s.setAttribute("data-emit-metadata",   "0");
+      s.setAttribute("data-input-position",  "top");
+      s.setAttribute("data-theme",           "preferred_color_scheme");
+      s.setAttribute("data-lang",            panel.getAttribute("data-giscus-lang") || "zh-CN");
+      s.onload = function () {
+        /* once giscus client is ready, sync to current site theme */
+        var trySync = function () {
+          if (window.giscus && typeof window.giscus.setTheme === "function") {
+            window.giscus.setTheme(root.getAttribute("data-theme") || "light");
+          } else {
+            setTimeout(trySync, 200);
+          }
+        };
+        trySync();
+      };
+      var placeholder = panel.querySelector(".comments-loading");
+      if (placeholder) { placeholder.parentNode.removeChild(placeholder); }
+      panel.appendChild(s);
+      panel.setAttribute("data-loaded", "1");
+    }
+
+    tabs.forEach(function (t) {
+      t.addEventListener("click", function () { activate(t.id); });
+    });
+
+    /* initial active: prefer saved choice; else first available tab */
+    var initial = (savedTab && document.getElementById(savedTab)) ? savedTab : tabs[0].id;
+    activate(initial);
   }
 
-  /* sync giscus (GitHub Discussions) theme with the site theme once it loads */
-  function syncGiscusTheme() {
-    if (window.giscus && typeof window.giscus.setTheme === "function") {
-      window.giscus.setTheme(root.getAttribute("data-theme") || "light");
-      return true;
-    }
-    return false;
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCommentTabs);
+  } else {
+    initCommentTabs();
   }
-  var giscusTimer = setInterval(function () {
-    if (syncGiscusTheme()) { clearInterval(giscusTimer); }
-  }, 250);
-  setTimeout(function () { clearInterval(giscusTimer); }, 15000);
 })();

@@ -803,35 +803,72 @@ a.badge:hover { opacity: 0.8; }
 .comments-hint {
   color: var(--text-2);
   font-size: 14px;
-  margin: 0 0 18px;
+  margin: 0 0 16px;
 }
-.comments-block {
-  margin: 22px 0 0;
-  padding: 18px 0 0;
-  border-top: 1px solid var(--border);
+
+/* tab strip */
+.comments-tabs {
+  display: flex;
+  gap: 0.4rem;
+  border-bottom: 1px solid var(--border);
+  margin: 0 0 22px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
-.comments-block:first-of-type { border-top: 0; padding-top: 0; }
-.comments-block h3 {
-  font-size: 1.05em;
-  margin: 0 0 12px;
-  color: var(--text-1);
+.comments-tab {
+  padding: 0.7rem 1.15rem;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 8px 8px 0 0;
+  transition: color 0.15s ease, background 0.15s ease;
+  position: relative;
+}
+.comments-tab:hover {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+.comments-tab.is-active {
+  color: var(--accent);
+  font-weight: 600;
+}
+.comments-tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0.6rem; right: 0.6rem; bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.comments-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* panels */
+.comments-panel[hidden] { display: none; }
+.comments-panel { animation: fade-in 0.25s ease; }
+.comments-loading {
+  color: var(--text-2);
+  font-size: 14px;
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  text-align: center;
 }
 #disqus_thread { min-height: 0; }
-.comments-giscus iframe { max-width: 100%; }
-.comments-giscus-setup {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px 18px;
-}
-.comments-giscus-setup p { margin: 0 0 8px; }
-.comments-giscus-setup ol { margin: 6px 0 0 1.2em; padding: 0; }
-.comments-giscus-setup li { margin: 4px 0; }
-.comments-giscus-setup code {
-  background: var(--bg);
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-size: 0.92em;
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ============ 404 ============ */
