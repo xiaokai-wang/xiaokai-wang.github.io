@@ -46,6 +46,20 @@
     var savedTab = null;
     try { savedTab = localStorage.getItem(STORAGE_KEY); } catch (e) { /* noop */ }
 
+    function loadDisqusFallback(panel) {
+      var thread = panel.querySelector("#disqus_thread");
+      if (!thread) { return; }
+      /* Disqus embed is injected statically in the layout; if 8s passed and
+         Disqus never inserted an iframe, show a helpful hint. */
+      setTimeout(function () {
+        if (thread.querySelector("iframe")) { return; }
+        thread.innerHTML = '<p class="comments-loading">Disqus 评论尚未加载。请检查：'
+          + '<br>① <code>disqus.com</code> 后台是否将 <code>xiaokai-wang.github.io</code> 加入「信任的域名」；'
+          + '<br>② 浏览器或扩展是否拦截了第三方资源；'
+          + '<br>③ 或切换上方的「GitHub 登录」标签使用 giscus。</p>';
+      }, 8000);
+    }
+
     function activate(tabId) {
       var activated = false;
       tabs.forEach(function (t) {
@@ -56,7 +70,7 @@
         if (!panel) { return; }
         if (active) {
           panel.removeAttribute("hidden");
-          if (t.id === "tab-disqus") { loadDisqus(panel); }
+          if (t.id === "tab-disqus") { loadDisqusFallback(panel); }
           if (t.id === "tab-giscus") { loadGiscus(panel); }
           activated = true;
         } else {
@@ -66,19 +80,6 @@
       if (activated) {
         try { localStorage.setItem(STORAGE_KEY, tabId); } catch (e) { /* noop */ }
       }
-    }
-
-    function loadDisqus(panel) {
-      var thread = panel.querySelector("#disqus_thread");
-      if (!thread || thread.getAttribute("data-loaded")) { return; }
-      var shortname = thread.getAttribute("data-disqus");
-      if (!shortname) { return; }
-      var s = document.createElement("script");
-      s.async = true;
-      s.src = "https://" + shortname + ".disqus.com/embed.js";
-      s.setAttribute("data-timestamp", +new Date());
-      (document.head || document.body).appendChild(s);
-      thread.setAttribute("data-loaded", "1");
     }
 
     function loadGiscus(panel) {

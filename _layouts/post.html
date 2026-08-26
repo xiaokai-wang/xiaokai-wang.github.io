@@ -47,7 +47,7 @@ layout: default
 {% if disqus_on or giscus_on %}
 <section class="comments">
   <h2 class="comments-title">评论</h2>
-  <p class="comments-hint">选择一种方式留言：</p>
+  <p class="comments-hint">选择一种方式留言；已有评论会显示在评论框下方。</p>
 
   <div class="comments-tabs" role="tablist" aria-label="选择评论方式">
     {% if disqus_on %}
@@ -71,7 +71,24 @@ layout: default
   <div class="comments-panels">
     {% if disqus_on %}
     <div class="comments-panel" id="panel-disqus" role="tabpanel" aria-labelledby="tab-disqus">
-      <div id="disqus_thread" data-disqus="{{ site.comments.disqus.short_name }}"></div>
+      <div id="disqus_thread" data-disqus="{{ site.comments.disqus.short_name }}">
+        <p class="comments-loading">正在加载 Disqus 评论…</p>
+      </div>
+      <script>
+        var disqus_config = function () {
+          this.page.url  = '{{ site.url }}{{ page.url }}';
+          this.page.identifier = '{{ page.id | default: page.url }}';
+          this.page.title = {{ page.title | jsonify }};
+        };
+        (function () {
+          var d = document, s = d.createElement('script');
+          s.async = true;
+          s.src = 'https://{{ site.comments.disqus.short_name }}.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+      <noscript>请启用 JavaScript 来查看 Disqus 评论（也可改用「GitHub 登录」方式）。</noscript>
     </div>
     {% endif %}
 
