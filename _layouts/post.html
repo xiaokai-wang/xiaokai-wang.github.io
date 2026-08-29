@@ -44,7 +44,9 @@ layout: default
 
 {% assign disqus_on = site.comments.disqus.short_name != "" %}
 {% assign giscus_on = site.comments.giscus.repo != "" and site.comments.giscus.repo_id != "" and site.comments.giscus.category_id != "" %}
-{% assign twikoo_on = site.comments.twikoo.server_url != "" or site.comments.twikoo.env_id != "" %}
+{% assign twikoo_env = site.comments.twikoo.env_id | default: "" %}
+{% assign twikoo_url = site.comments.twikoo.server_url | default: "" %}
+{% assign twikoo_on = twikoo_env != "" or twikoo_url != "" %}
 {% if disqus_on or giscus_on or twikoo_on %}
 <section class="comments">
   <h2 class="comments-title">评论</h2>
