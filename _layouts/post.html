@@ -44,7 +44,8 @@ layout: default
 
 {% assign disqus_on = site.comments.disqus.short_name != "" %}
 {% assign giscus_on = site.comments.giscus.repo != "" and site.comments.giscus.repo_id != "" and site.comments.giscus.category_id != "" %}
-{% if disqus_on or giscus_on %}
+{% assign twikoo_on = site.comments.twikoo.server_url != "" or site.comments.twikoo.env_id != "" %}
+{% if disqus_on or giscus_on or twikoo_on %}
 <section class="comments">
   <h2 class="comments-title">评论</h2>
   <p class="comments-hint">选择一种方式留言；已有评论会显示在评论框下方。</p>
@@ -64,6 +65,14 @@ layout: default
             aria-controls="panel-giscus" aria-selected="{% if disqus_on %}false{% else %}true{% endif %}"
             data-target="panel-giscus">
       GitHub 登录
+    </button>
+    {% endif %}
+    {% if twikoo_on %}
+    <button type="button" class="comments-tab{% unless disqus_on or giscus_on %} is-active{% endunless %}"
+            role="tab" id="tab-twikoo"
+            aria-controls="panel-twikoo" aria-selected="{% if disqus_on or giscus_on %}false{% else %}true{% endif %}"
+            data-target="panel-twikoo">
+      匿名评论（Twikoo）
     </button>
     {% endif %}
   </div>
@@ -100,6 +109,17 @@ layout: default
          data-giscus-category-id="{{ site.comments.giscus.category_id }}"
          data-giscus-lang="{{ site.comments.giscus.lang | default: 'zh-CN' }}">
       <p class="comments-loading">点击上方「GitHub 登录」标签以加载评论区。</p>
+    </div>
+    {% endif %}
+
+    {% if twikoo_on %}
+    <div class="comments-panel" id="panel-twikoo" role="tabpanel" aria-labelledby="tab-twikoo"{% if disqus_on or giscus_on %} hidden{% endif %}
+         data-twikoo-server-url="{{ site.comments.twikoo.server_url | default: '' }}"
+         data-twikoo-env-id="{{ site.comments.twikoo.env_id | default: '' }}"
+         data-twikoo-region="{{ site.comments.twikoo.region | default: '' }}"
+         data-twikoo-lang="{{ site.comments.twikoo.lang | default: 'zh-CN' }}"
+         data-twikoo-path="{{ page.url }}">
+      <p class="comments-loading">正在加载 Twikoo 评论…</p>
     </div>
     {% endif %}
   </div>

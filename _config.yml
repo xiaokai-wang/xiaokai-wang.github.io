@@ -26,3 +26,11 @@ comments:
     category: "Announcements"
     category_id: "DIC_kwDOAqQ63s4DEM3I"
     lang: zh-CN
+
+  # Twikoo：简洁、安全、免费的静态网站评论系统，支持匿名评论（无需注册）。
+  # 后端部署在腾讯云开发（国内访问快）。
+  twikoo:
+    env_id: "twikoo1218-d3g364qna539b4635"   # 腾讯云开发环境 ID
+    region: "ap-shanghai"                        # 环境所在地域：上海
+    # server_url: ""                              # Vercel 部署时填这个，与 env_id 二选一
+    lang: zh-CN

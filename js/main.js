@@ -72,6 +72,7 @@
           panel.removeAttribute("hidden");
           if (t.id === "tab-disqus") { loadDisqusFallback(panel); }
           if (t.id === "tab-giscus") { loadGiscus(panel); }
+          if (t.id === "tab-twikoo") { loadTwikoo(panel); }
           activated = true;
         } else {
           panel.setAttribute("hidden", "");
@@ -112,6 +113,42 @@
       };
       var placeholder = panel.querySelector(".comments-loading");
       if (placeholder) { placeholder.parentNode.removeChild(placeholder); }
+      panel.appendChild(s);
+      panel.setAttribute("data-loaded", "1");
+    }
+
+    function loadTwikoo(panel) {
+      if (panel.getAttribute("data-loaded")) { return; }
+      var serverUrl = panel.getAttribute("data-twikoo-server-url") || "";
+      var envId     = panel.getAttribute("data-twikoo-env-id") || "";
+      var region    = panel.getAttribute("data-twikoo-region") || "";
+      var lang      = panel.getAttribute("data-twikoo-lang") || "zh-CN";
+      var path      = panel.getAttribute("data-twikoo-path") || window.location.pathname;
+
+      var container = document.createElement("div");
+      container.id = "twikoo-thread";
+      var placeholder = panel.querySelector(".comments-loading");
+      if (placeholder) { placeholder.parentNode.replaceChild(container, placeholder); }
+      else { panel.appendChild(container); }
+
+      var s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/twikoo@1/dist/twikoo.all.min.js";
+      s.async = true;
+      s.onload = function () {
+        if (window.twikoo && typeof window.twikoo.init === "function") {
+          var opts = { el: "#twikoo-thread", path: path, lang: lang };
+          if (envId) {
+            opts.envId = envId;
+            if (region) { opts.region = region; }
+          } else if (serverUrl) {
+            opts.serverUrl = serverUrl;
+          }
+          window.twikoo.init(opts);
+        }
+      };
+      s.onerror = function () {
+        container.innerHTML = '<p class="comments-loading">Twikoo 脚本加载失败。请检查网络连接，或确认 <code>env_id</code> 配置正确。</p>';
+      };
       panel.appendChild(s);
       panel.setAttribute("data-loaded", "1");
     }
