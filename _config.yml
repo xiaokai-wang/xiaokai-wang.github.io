@@ -29,8 +29,9 @@ comments:
 
   # Twikoo：简洁、安全、免费的静态网站评论系统，支持匿名评论（无需注册）。
   # 后端部署在腾讯云开发（国内访问快）。
+  # 注意：体验版不支持自定义跨域域名，请使用 env_id 方式（通过 SDK 调用，无需跨域配置）。
   twikoo:
-    env_id: ""                                          # 腾讯云开发环境 ID（与 server_url 二选一）
-    region: "ap-shanghai"                               # 环境所在地域：上海
-    server_url: "https://twikoo1218-d3g364qna539b4635-1476721982.ap-shanghai.app.tcloudbase.com/twikoo"
+    env_id: "twikoo1218-d3g364qna539b4635"   # 腾讯云开发环境 ID
+    region: "ap-shanghai"                        # 环境所在地域：上海
+    # server_url: ""                              # 付费版可用，体验版请用 env_id
     lang: zh-CN
