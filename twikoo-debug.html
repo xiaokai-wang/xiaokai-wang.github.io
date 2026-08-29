@@ -1,0 +1,201 @@
+---
+layout: default
+title: Twikoo 诊断
+---
+
+<style>
+.diag { max-width: 860px; margin: 0 auto; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+.diag h1 { font-size: 1.6em; margin: 0 0 6px; }
+.diag .sub { color: #666; font-size: 14px; margin: 0 0 24px; }
+.step { border: 1px solid var(--border, #e3e3e3); border-radius: 10px; padding: 14px 16px; margin: 0 0 12px; background: var(--card, #fff); }
+.step-head { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
+.badge { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 7px; border-radius: 11px; font-size: 12px; font-weight: 700; color: #fff; background: #999; }
+.badge.run  { background: #d97706; }
+.badge.ok   { background: #16a34a; }
+.badge.fail { background: #dc2626; }
+.step-desc { color: #666; font-size: 13.5px; margin: 6px 0 0 32px; }
+.step-out { margin: 10px 0 0 32px; padding: 10px 12px; border-radius: 7px; background: #f6f8fa; border: 1px solid #e8ebef; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; line-height: 1.65; white-space: pre-wrap; word-break: break-all; color: #1f2937; }
+.step-out:empty { display: none; }
+.step-out.err { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+.diag button { margin: 20px 0 0; padding: 11px 22px; border: 0; border-radius: 9px; background: #2563eb; color: #fff; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; }
+.diag button:hover { background: #1d4ed8; }
+.diag button:disabled { background: #9ca3af; cursor: not-allowed; }
+.summary { margin: 22px 0 0; padding: 16px 18px; border-radius: 10px; background: var(--card, #fff); border: 1px solid var(--border, #e3e3e3); display: none; }
+.summary.show { display: block; }
+.summary h2 { font-size: 1.1em; margin: 0 0 10px; }
+.summary ol { margin: 0; padding-left: 1.4em; font-size: 14px; line-height: 1.85; }
+.summary code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 0.92em; }
+</style>
+
+<div class="diag">
+  <h1>Twikoo 连通性诊断</h1>
+  <p class="sub">环境：<code id="cfg-env">—</code> ｜ 地域：<code id="cfg-region">—</code>　逐步检测，定位「评论失败: undefined」卡在哪一环。</p>
+
+  <div id="steps"></div>
+  <button id="run">开始诊断</button>
+  <div class="summary" id="summary"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/twikoo@1/dist/twikoo.all.min.js"></script>
+  <script>
+  (function () {
+    var ENV_ID  = document.getElementById("cfg-env");
+    var REGION  = document.getElementById("cfg-region");
+    var STEPS   = document.getElementById("steps");
+    var SUMMARY = document.getElementById("summary");
+    var BTN     = document.getElementById("run");
+
+    /* 与 _config.yml 保持一致 */
+    var ENV    = "{{ site.comments.twikoo.env_id | default: '' }}";
+    var REGION_V = "{{ site.comments.twikoo.region | default: '' }}";
+    ENV_ID.textContent  = ENV || "(未配置)";
+    REGION.textContent  = REGION_V || "(未配置)";
+
+    var steps = [];
+    function addStep(title, desc) {
+      var i = steps.length;
+      var el = document.createElement("div");
+      el.className = "step";
+      el.innerHTML =
+        '<div class="step-head"><span class="badge" id="b' + i + '">' + (i + 1) + '</span>' + title + '</div>' +
+        '<div class="step-desc">' + desc + '</div>' +
+        '<div class="step-out" id="o' + i + '"></div>';
+      STEPS.appendChild(el);
+      steps.push({ badge: document.getElementById("b" + i), out: document.getElementById("o" + i) });
+      return steps[i];
+    }
+    function mark(s, state, text, isErr) {
+      s.badge.className = "badge " + state;
+      s.badge.textContent = state === "ok" ? "✓" : (state === "fail" ? "✕" : "…");
+      if (text) {
+        s.out.textContent = text;
+        s.out.className = "step-out" + (isErr ? " err" : "");
+      }
+    }
+
+    var s1 = addStep("加载 Twikoo SDK", "从 jsdelivr CDN 拉取 twikoo.all.min.js（内含 CloudBase SDK）");
+    var s2 = addStep("初始化 CloudBase 环境", "用 env_id + region 初始化，验证环境 ID 是否有效");
+    var s3 = addStep("匿名登录", "Twikoo 依赖 CloudBase 匿名登录标识游客身份，未开启则后续全部失败");
+    var s4 = addStep("调用 twikoo 云函数", "实际发起一次云函数调用，读取本页评论数据");
+
+    BTN.addEventListener("click", function () {
+      BTN.disabled = true;
+      SUMMARY.classList.remove("show");
+      SUMMARY.innerHTML = "";
+      [s1, s2, s3, s4].forEach(function (s) { mark(s, "run", ""); });
+
+      var app, auth;
+
+      /* ---- Step 1: SDK ---- */
+      mark(s1, "run");
+      if (!window.cloudbase) {
+        mark(s1, "fail", "twikoo.all.min.js 未加载出 cloudbase 对象。\n可能原因：CDN 被拦截 / 脚本加载失败。\n请检查浏览器控制台 Network 面板中该请求的状态。", true);
+        BTN.disabled = false;
+        showSummary("sdk");
+        return;
+      }
+      mark(s1, "ok", "cloudbase SDK 版本：" + (window.cloudbase.version || "unknown"));
+
+      /* ---- Step 2: init env ---- */
+      try {
+        app = window.cloudbase.init({ env: ENV, region: REGION_V });
+        mark(s2, "ok", "环境初始化成功\nenv = " + ENV + "\nregion = " + REGION_V);
+      } catch (e) {
+        mark(s2, "fail", "初始化失败：" + (e && e.message ? e.message : String(e)) +
+          "\n\n→ 请到 CloudBase 控制台核对「环境 ID」（注意：不是环境名称）。", true);
+        BTN.disabled = false;
+        showSummary("env");
+        return;
+      }
+
+      /* ---- Step 3: anonymous login ---- */
+      auth = app.auth({ persistence: "local" });
+      auth.signInAnonymously().then(function () {
+        return auth.getLoginState();
+      }).then(function (state) {
+        if (!state) { throw new Error("登录状态为空"); }
+        mark(s3, "ok", "匿名登录成功，游客身份已建立");
+
+        /* ---- Step 4: call twikoo ---- */
+        return app.callFunction({
+          name: "twikoo",
+          data: {
+            event: "COMMENT_GET",
+            url: window.location.pathname,
+            path: window.location.pathname
+          }
+        });
+      }).then(function (res) {
+        var body = res && res.result;
+        var txt = JSON.stringify(body, null, 2);
+        if (body && body.code === 0) {
+          var n = (body.data && body.data.length) || 0;
+          mark(s4, "ok", "云函数调用成功，本页已有 " + n + " 条评论\n\n" + txt.slice(0, 400));
+          BTN.disabled = false;
+          showSummary("ok");
+        } else if (body && (body.code === undefined)) {
+          mark(s4, "ok", "云函数已响应（返回体无 code 字段，视为可达）\n\n" + txt.slice(0, 400));
+          BTN.disabled = false;
+          showSummary("ok");
+        } else {
+          mark(s4, "fail", "云函数返回错误：\n" + txt.slice(0, 600), true);
+          BTN.disabled = false;
+          showSummary("cf");
+        }
+      }).catch(function (e) {
+        var msg = (e && e.message) ? e.message : String(e);
+        var code = e && e.code ? e.code : "";
+
+        if (/anonymous|匿名|signIn|auth/i.test(msg) || /AUTH/i.test(code)) {
+          mark(s3, "fail", "匿名登录失败：\n" + msg + (code ? "\n错误码：" + code : "") +
+            "\n\n→ 请到 CloudBase 控制台 → 登录授权 → 开启「匿名登录」。", true);
+          mark(s4, "fail", "因登录失败，未执行", true);
+          BTN.disabled = false;
+          showSummary("auth");
+          return;
+        }
+
+        mark(s3, "ok", "匿名登录成功");
+        mark(s4, "fail", "云函数调用失败：\n" + msg + (code ? "\n错误码：" + code : "") +
+          "\n\n→ 可能原因：\n" +
+          "  ① 云函数 twikoo 未部署或部署失败\n" +
+          "  ② 数据库 comment 集合权限不是「所有用户可读，仅创建者可写」\n" +
+          "  ③ 安全域名未添加 xiaokai-wang.github.io", true);
+        BTN.disabled = false;
+        showSummary("cf");
+      });
+    });
+
+    function showSummary(kind) {
+      var html = "";
+      if (kind === "sdk") {
+        html = "<h2>卡在第 1 步：SDK 加载失败</h2><ol>" +
+          "<li>jsdelivr CDN 在国内部分地区不稳定，可改用 <code>unpkg.com</code> 或 <code>cdn.staticfile.org</code></li>" +
+          "<li>或把 <code>twikoo.all.min.js</code> 下载到本地 <code>js/</code> 目录，改为本地引用</li></ol>";
+      } else if (kind === "env") {
+        html = "<h2>卡在第 2 步：环境 ID 无效</h2><ol>" +
+          "<li>打开 <a href='https://tcb.cloud.tencent.com/dev' target='_blank'>CloudBase 控制台</a>，复制「<b>环境 ID</b>」（形如 <code>xxx-1a2b3c4d</code>，不是环境名称）</li>" +
+          "<li>填入 <code>_config.yml</code> 的 <code>comments.twikoo.env_id</code> 并推送</li>" +
+          "<li>确认地域与控制台一致（上海 = <code>ap-shanghai</code>）</li></ol>";
+      } else if (kind === "auth") {
+        html = "<h2>卡在第 3 步：匿名登录未开启</h2><ol>" +
+          "<li>CloudBase 控制台 → 你的环境 → <b>登录授权</b></li>" +
+          "<li>找到「<b>匿名登录</b>」，点击开启</li>" +
+          "<li>等待 1-2 分钟生效后刷新本页重试</li></ol>";
+      } else if (kind === "cf") {
+        html = "<h2>卡在第 4 步：云函数调用失败</h2><ol>" +
+          "<li><b>云函数是否部署</b>：控制台 → 云函数 → 确认存在名为 <code>twikoo</code> 的函数且状态正常</li>" +
+          "<li><b>数据库权限</b>：控制台 → 数据库 → <code>comment</code> 集合 → 权限设置 → 改为「<b>所有用户可读，仅创建者可写</b>」（默认为「仅创建者可读写」，会导致游客写入被拒）</li>" +
+          "<li><b>安全域名</b>：控制台 → 安全配置 → 安全域名 → 添加 <code>xiaokai-wang.github.io</code></li></ol>";
+      } else if (kind === "ok") {
+        html = "<h2>全部通过 ✓</h2><ol>" +
+          "<li>说明后端链路完全正常，此前的报错可能是浏览器缓存导致</li>" +
+          "<li>回到文章页，<b>强制刷新</b>（Cmd+Shift+R）后再试一次评论</li></ol>";
+      }
+      if (html) {
+        SUMMARY.innerHTML = html;
+        SUMMARY.classList.add("show");
+      }
+    }
+  })();
+  </script>
+</div>
