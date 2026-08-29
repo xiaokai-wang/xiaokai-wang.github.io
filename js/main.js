@@ -135,22 +135,48 @@
       s.src = "https://cdn.jsdelivr.net/npm/twikoo@1/dist/twikoo.all.min.js";
       s.async = true;
       s.onload = function () {
-        if (window.twikoo && typeof window.twikoo.init === "function") {
-          var opts = { el: "#twikoo-thread", path: path, lang: lang };
-          if (envId) {
-            opts.envId = envId;
-            if (region) { opts.region = region; }
-          } else if (serverUrl) {
-            opts.serverUrl = serverUrl;
-          }
-          window.twikoo.init(opts);
+        if (!(window.twikoo && typeof window.twikoo.init === "function")) {
+          showTwikooError(container, "Twikoo 脚本已加载但初始化接口缺失。");
+          return;
         }
+        var opts = { el: "#twikoo-thread", path: path, lang: lang };
+        if (envId) {
+          opts.envId = envId;
+          if (region) { opts.region = region; }
+        } else if (serverUrl) {
+          opts.serverUrl = serverUrl;
+        }
+        try {
+          window.twikoo.init(opts);
+        } catch (e) {
+          showTwikooError(container, "初始化异常：" + (e && e.message ? e.message : e));
+          return;
+        }
+        /* 兜底：环境被删除 / 配额耗尽 / 权限未配时，init() 会静默无响应，
+           页面只剩一片空白。8 秒后若容器内仍无内容，给出明确提示。 */
+        setTimeout(function () {
+          if (container && container.isConnected && !container.innerHTML.trim()) {
+            showTwikooError(container, "评论后端 8 秒内未返回数据。");
+          }
+        }, 8000);
       };
       s.onerror = function () {
-        container.innerHTML = '<p class="comments-loading">Twikoo 脚本加载失败。请检查网络连接，或确认 <code>env_id</code> 配置正确。</p>';
+        showTwikooError(container, "Twikoo 脚本加载失败，请检查网络或 CDN 可达性。");
       };
       panel.appendChild(s);
       panel.setAttribute("data-loaded", "1");
+    }
+
+    function showTwikooError(container, reason) {
+      if (!container) { return; }
+      container.innerHTML =
+        '<div class="comments-fallback">' +
+        '<p><strong>评论暂时无法加载</strong></p>' +
+        '<p class="comments-fallback-reason">' + reason + '</p>' +
+        '<p>常见原因：云开发环境被删除 / 免费资源点用尽 / 未启用匿名登录 / ' +
+        '网站域名未加入 WEB 安全域名。</p>' +
+        '<p>可切换到「GitHub 登录」标签留言，不受影响。</p>' +
+        '</div>';
     }
 
     tabs.forEach(function (t) {

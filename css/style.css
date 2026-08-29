@@ -872,6 +872,25 @@ a.badge:hover { opacity: 0.8; }
   justify-content: center;
   text-align: center;
 }
+/* 评论后端不可用时的兜底提示（环境被删 / 配额耗尽 / 权限未配） */
+.comments-fallback {
+  padding: 16px 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.comments-fallback p { margin: 0 0 6px; }
+.comments-fallback p:last-child { margin-bottom: 0; }
+.comments-fallback strong { color: var(--text-1); }
+.comments-fallback-reason {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+  opacity: 0.85;
+}
 
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(4px); }
