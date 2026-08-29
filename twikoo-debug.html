@@ -155,13 +155,25 @@ title: Twikoo 诊断
         }
 
         mark(s3, "ok", "匿名登录成功");
-        mark(s4, "fail", "云函数调用失败：\n" + msg + (code ? "\n错误码：" + code : "") +
-          "\n\n→ 可能原因：\n" +
-          "  ① 云函数 twikoo 未部署或部署失败\n" +
-          "  ② 数据库 comment 集合权限不是「所有用户可读，仅创建者可写」\n" +
-          "  ③ 安全域名未添加 xiaokai-wang.github.io", true);
+
+        /* 针对性判断：CORS / 网络拦截 / 地域 */
+        var raw = msg + " " + code;
+        var kind = "cf";
+        var hint = "";
+        if (/CORS|Access-Control-Allow-Origin|blocked by/i.test(raw)) {
+          kind = "cors";
+          hint = "\n\n→ 跨域被拦截（CORS）";
+        } else if (/Failed to fetch|NetworkError|ERR_BLOCKED_BY_CLIENT|ERR_CONNECTION|timeout/i.test(raw)) {
+          kind = "net";
+          hint = "\n\n→ 网络请求被中断";
+        } else if (/region|地域|ap-/.test(raw)) {
+          kind = "region";
+          hint = "\n\n→ 疑似地域(region)不匹配";
+        }
+
+        mark(s4, "fail", "云函数调用失败：" + hint + "\n" + msg + (code ? "\n错误码：" + code : ""), true);
         BTN.disabled = false;
-        showSummary("cf");
+        showSummary(kind);
       });
     });
 
@@ -181,11 +193,35 @@ title: Twikoo 诊断
           "<li>CloudBase 控制台 → 你的环境 → <b>登录授权</b></li>" +
           "<li>找到「<b>匿名登录</b>」，点击开启</li>" +
           "<li>等待 1-2 分钟生效后刷新本页重试</li></ol>";
+      } else if (kind === "cors") {
+        html = "<h2>卡在第 4 步：跨域（CORS）被拦截</h2>" +
+          "<p style='font-size:14px;color:#555;margin:0 0 10px'>这是 CloudBase 部署 Twikoo <b>最常见的失败原因</b>。按以下两步处理：</p><ol>" +
+          "<li><b>加安全域名</b>：CloudBase 控制台 → 安全配置 → 安全域名 → 添加 <code>xiaokai-wang.github.io</code></li>" +
+          "<li><b>清空 CORS 白名单</b>：进入 Twikoo 管理面板（评论框齿轮图标）→ 配置管理 → 通用 → 把 <code>CORS_ALLOW_ORIGIN</code> 字段<b>清空</b>并保存。<br>" +
+          "<span style='color:#888;font-size:13px'>该字段若填了具体域名，反而会拒绝其它来源；留空表示不限制。</span></li></ol>";
+      } else if (kind === "net") {
+        html = "<h2>卡在第 4 步：网络请求被中断</h2><ol>" +
+          "<li><b>先排除广告拦截插件</b>：uBlock Origin / AdGuard / 去广告规则（如 EasyList）会拦截 <code>tcb-api.tencentcloudapi.com</code>。<br>" +
+          "临时禁用插件或把本站加入白名单后重试。</li>" +
+          "<li>若禁用后仍失败，用 F12 → Network 面板看该请求的状态码：<br>" +
+          "<code>ERR_BLOCKED_BY_CLIENT</code> = 插件拦截；<code>ERR_CONNECTION_*</code> = 网络不通</li>" +
+          "<li>确认 <code>tcb-api.tencentcloudapi.com</code> 在当前网络下可访问</li></ol>";
+      } else if (kind === "region") {
+        html = "<h2>卡在第 4 步：地域（region）不匹配</h2>" +
+          "<p style='font-size:14px;color:#555;margin:0 0 10px'>CloudBase 有个已知问题：环境地域与 <code>region</code> 参数不一致时，SDK 无法正确路由。<br>" +
+          "有用户反馈<b>广州节点</b>环境存在此问题，换到<b>上海节点</b>后恢复正常。</p><ol>" +
+          "<li>到 CloudBase 控制台确认该环境的<b>实际地域</b>（不要凭印象）</li>" +
+          "<li>把 <code>_config.yml</code> 的 <code>comments.twikoo.region</code> 改成实际地域：<br>" +
+          "上海 = <code>ap-shanghai</code>　广州 = <code>ap-guangzhou</code>　北京 = <code>ap-beijing</code></li>" +
+          "<li>推送后<b>强制刷新</b>（Cmd+Shift+R）本页重试</li></ol>";
       } else if (kind === "cf") {
         html = "<h2>卡在第 4 步：云函数调用失败</h2><ol>" +
-          "<li><b>云函数是否部署</b>：控制台 → 云函数 → 确认存在名为 <code>twikoo</code> 的函数且状态正常</li>" +
-          "<li><b>数据库权限</b>：控制台 → 数据库 → <code>comment</code> 集合 → 权限设置 → 改为「<b>所有用户可读，仅创建者可写</b>」（默认为「仅创建者可读写」，会导致游客写入被拒）</li>" +
-          "<li><b>安全域名</b>：控制台 → 安全配置 → 安全域名 → 添加 <code>xiaokai-wang.github.io</code></li></ol>";
+          "<li><b>云函数是否部署</b>：控制台 → 云函数 → 确认存在名为 <code>twikoo</code> 的函数且状态正常（不是「创建中」或失败态）</li>" +
+          "<li><b>数据库权限</b>：控制台 → 数据库 → <code>comment</code> 集合 → 权限设置 → 改为「<b>所有用户可读，仅创建者可写</b>」。<br>" +
+          "<span style='color:#888;font-size:13px'>默认是「仅创建者可读写」，会导致游客写入被拒——这正是「评论失败: undefined」的典型来源。</span></li>" +
+          "<li><b>安全域名</b>：控制台 → 安全配置 → 安全域名 → 添加 <code>xiaokai-wang.github.io</code></li>" +
+          "<li>若以上都正常，用 F12 → Console 看含 <code>twikoo</code> 关键字的完整报错，对照 " +
+          "<a href='https://twikoo.js.org/faq' target='_blank'>Twikoo 官方 FAQ</a></li></ol>";
       } else if (kind === "ok") {
         html = "<h2>全部通过 ✓</h2><ol>" +
           "<li>说明后端链路完全正常，此前的报错可能是浏览器缓存导致</li>" +
