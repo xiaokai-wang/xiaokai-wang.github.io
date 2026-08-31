@@ -72,7 +72,7 @@
           panel.removeAttribute("hidden");
           if (t.id === "tab-disqus") { loadDisqusFallback(panel); }
           if (t.id === "tab-giscus") { loadGiscus(panel); }
-          if (t.id === "tab-twikoo") { loadTwikoo(panel); }
+          if (t.id === "tab-waline") { loadWaline(panel); }
           activated = true;
         } else {
           panel.setAttribute("hidden", "");
@@ -117,65 +117,68 @@
       panel.setAttribute("data-loaded", "1");
     }
 
-    function loadTwikoo(panel) {
+    function loadWaline(panel) {
       if (panel.getAttribute("data-loaded")) { return; }
-      var serverUrl = panel.getAttribute("data-twikoo-server-url") || "";
-      var envId     = panel.getAttribute("data-twikoo-env-id") || "";
-      var region    = panel.getAttribute("data-twikoo-region") || "";
-      var lang      = panel.getAttribute("data-twikoo-lang") || "zh-CN";
-      var path      = panel.getAttribute("data-twikoo-path") || window.location.pathname;
+      var serverURL = panel.getAttribute("data-waline-server-url") || "";
+      var lang      = panel.getAttribute("data-waline-lang") || "zh-CN";
+      var path      = panel.getAttribute("data-waline-path") || window.location.pathname;
+      if (!serverURL) {
+        showCommentError(panel, "未配置 Waline 服务端地址（comment.xiaokai.wang）。");
+        return;
+      }
 
       var container = document.createElement("div");
-      container.id = "twikoo-thread";
+      container.id = "waline-thread";
       var placeholder = panel.querySelector(".comments-loading");
       if (placeholder) { placeholder.parentNode.replaceChild(container, placeholder); }
       else { panel.appendChild(container); }
 
       var s = document.createElement("script");
-      s.src = "https://cdn.jsdelivr.net/npm/twikoo@1/dist/twikoo.all.min.js";
+      s.src = "https://cdn.staticfile.org/waline/3.5.2/waline.js";
       s.async = true;
       s.onload = function () {
-        if (!(window.twikoo && typeof window.twikoo.init === "function")) {
-          showTwikooError(container, "Twikoo 脚本已加载但初始化接口缺失。");
+        if (!(window.Waline && typeof window.Waline.init === "function")) {
+          showCommentError(panel, "Waline 脚本已加载但初始化接口缺失。");
           return;
-        }
-        var opts = { el: "#twikoo-thread", path: path, lang: lang };
-        if (envId) {
-          opts.envId = envId;
-          if (region) { opts.region = region; }
-        } else if (serverUrl) {
-          opts.serverUrl = serverUrl;
         }
         try {
-          window.twikoo.init(opts);
+          window.Waline.init({
+            el: "#waline-thread",
+            serverURL: serverURL,
+            lang: lang,
+            path: path,
+            dark: 'html[data-theme="dark"]',
+            reaction: false
+          });
         } catch (e) {
-          showTwikooError(container, "初始化异常：" + (e && e.message ? e.message : e));
+          showCommentError(panel, "初始化异常：" + (e && e.message ? e.message : e));
           return;
         }
-        /* 兜底：环境被删除 / 配额耗尽 / 权限未配时，init() 会静默无响应，
-           页面只剩一片空白。8 秒后若容器内仍无内容，给出明确提示。 */
+        /* 兜底：后端未就绪 / 域名未解析 / 跨域未配置时，
+           8 秒后若容器内仍无评论节点，给出明确提示。 */
         setTimeout(function () {
-          if (container && container.isConnected && !container.innerHTML.trim()) {
-            showTwikooError(container, "评论后端 8 秒内未返回数据。");
+          if (container && container.isConnected && !container.querySelector(".wl-panel")) {
+            showCommentError(panel, "评论后端 8 秒内未返回数据。");
           }
         }, 8000);
       };
       s.onerror = function () {
-        showTwikooError(container, "Twikoo 脚本加载失败，请检查网络或 CDN 可达性。");
+        showCommentError(panel, "Waline 脚本加载失败，请检查网络或 CDN 可达性。");
       };
       panel.appendChild(s);
       panel.setAttribute("data-loaded", "1");
     }
 
-    function showTwikooError(container, reason) {
-      if (!container) { return; }
+    function showCommentError(panel, reason) {
+      if (!panel) { return; }
+      var container = panel.querySelector("#waline-thread") || panel;
       container.innerHTML =
         '<div class="comments-fallback">' +
         '<p><strong>评论暂时无法加载</strong></p>' +
         '<p class="comments-fallback-reason">' + reason + '</p>' +
-        '<p>常见原因：云开发环境被删除 / 免费资源点用尽 / 未启用匿名登录 / ' +
-        '网站域名未加入 WEB 安全域名。</p>' +
-        '<p>可切换到「GitHub 登录」标签留言，不受影响。</p>' +
+        '<p>常见原因：后端函数未部署 / 自定义域名未解析 / 数据库未连通 / ' +
+        '跨域（CORS）未放行 xiaokai-wang.github.io。</p>' +
+        '<p>可切换到「GitHub 登录」或「Disqus」标签留言，不受影响。</p>' +
         '</div>';
     }
 

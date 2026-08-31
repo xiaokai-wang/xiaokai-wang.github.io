@@ -865,6 +865,7 @@ a.badge:hover { opacity: 0.8; }
   text-align: center;
 }
 #disqus_thread { min-height: 240px; }
+#waline-thread { min-height: 240px; }
 #disqus_thread > .comments-loading {
   min-height: 200px;
   display: flex;
