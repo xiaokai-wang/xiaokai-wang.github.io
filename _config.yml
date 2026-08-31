@@ -27,11 +27,9 @@ comments:
     category_id: "DIC_kwDOAqQ63s4DEM3I"
     lang: zh-CN
 
-  # Twikoo：简洁、安全、免费的静态网站评论系统，支持匿名评论（无需注册）。
-  # 后端部署在腾讯云开发（国内访问快）。
-  # 注意：体验版不支持自定义跨域域名，请使用 env_id 方式（通过 SDK 调用，无需跨域配置）。
-  twikoo:
-    env_id: "twikoo1218-d3g364qna539b4635"   # 腾讯云开发环境 ID
-    region: "ap-shanghai"                        # 环境所在地域：上海
-    # server_url: ""                              # 付费版可用，体验版请用 env_id
+  # Waline：简洁、免费、支持匿名评论（无需登录）的静态网站评论系统。
+  # 后端部署在 Render（免费套餐），数据库用 TiDB Cloud Serverless（新加坡）。
+  waline:
+    server_url: "https://waline-comment.onrender.com"
     lang: zh-CN
+    # 其他 Waline 客户端参数见 https://waline.js.org/
