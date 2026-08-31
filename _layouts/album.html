@@ -1,0 +1,72 @@
+---
+layout: default
+---
+
+{%- comment %}
+  相册详情页（二级路径 /photos/<相册名>/）。
+  在相册目录内新建 index.md：
+  ---
+  layout: album
+  title: 相册名
+  album: 相册目录名
+  description: 一句话描述（可选）
+  ---
+  该目录下的所有图片会自动按文件名排序展示。
+{%- endcomment %}
+
+{%- assign albumDir = page.album | default: "" -%}
+{%- assign img_exts = "jpg,jpeg,png,gif,webp,svg,bmp,avif" | split: "," -%}
+{%- assign aPrefix = "/photos/" | append: albumDir | append: "/" -%}
+
+{%- assign pics = "" | split: "|" -%}
+{%- if albumDir != "" -%}
+{%- for f in site.static_files -%}
+  {%- if f.path contains aPrefix -%}
+    {%- assign ext = f.extname | remove: "." | downcase -%}
+    {%- if img_exts contains ext -%}
+      {%- assign pics = pics | push: f -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+{%- assign pics = pics | sort: "name" -%}
+
+<div class="container">
+
+  <a class="back-link" href="/photos/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    返回照片
+  </a>
+
+  <header class="category-hero c-photos anim">
+    <span class="cat-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+    </span>
+    <div>
+      <h1>{{ page.title | default: albumDir }}</h1>
+      {% if page.description %}<p class="cat-desc">{{ page.description }}</p>{% endif %}
+      <div class="cat-meta">
+        <span>{{ pics | size }} 张照片</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="cat-rule"></div>
+
+  {%- if pics.size > 0 -%}
+  <div class="album-grid" id="album-{{ albumDir | slugify }}">
+    {% for f in pics %}
+    <a class="album-photo anim d{{ forloop.index | modulo: 4 | plus: 1 }}"
+       href="{{ f.path }}" data-lightbox="{{ albumDir }}" data-caption="{{ f.name }}">
+      <img src="{{ f.path }}" alt="{{ f.name }}" loading="lazy" />
+    </a>
+    {% endfor %}
+  </div>
+  {%- else -%}
+  <article class="post-card anim">
+    <h3>这个相册还没有照片</h3>
+    <p class="post-desc">把图片放进 <code>photos/{{ albumDir }}/</code> 目录即可自动出现在这里。</p>
+  </article>
+  {%- endif -%}
+
+</div>

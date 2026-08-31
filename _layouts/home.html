@@ -65,7 +65,16 @@ layout: default
         </span>
         <h3>照片</h3>
         <p>用镜头记录的光影瞬间与沿途风景。</p>
-        <span class="cat-count">{{ site.categories.photos | size }} 组</span>
+        {%- assign photo_albums = 0 -%}
+        {%- for p in site.pages -%}
+          {%- assign pp = p.path | split: "/" -%}
+          {%- if pp.size >= 3 and pp[0] == "photos" -%}
+            {%- assign is_ai = false -%}
+            {%- for part in pp offset: 1 -%}{%- if part == "index.md" or part == "index.html" -%}{%- assign is_ai = true -%}{%- endif -%}{%- endfor -%}
+            {%- if is_ai -%}{%- assign photo_albums = photo_albums | plus: 1 -%}{%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        <span class="cat-count">{{ photo_albums }} 个相册</span>
       </a>
       <a class="cat-card c-opinion anim d3" href="/opinion/">
         <span class="cat-icon">

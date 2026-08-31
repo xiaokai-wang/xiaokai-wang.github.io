@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="osky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f2b46"/>
+      <stop offset="60%" stop-color="#c96f4a"/>
+      <stop offset="100%" stop-color="#f2b56b"/>
+    </linearGradient>
+    <linearGradient id="osea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d98a54"/>
+      <stop offset="40%" stop-color="#3f6d8e"/>
+      <stop offset="100%" stop-color="#173a55"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#osky)"/>
+  <circle cx="400" cy="330" r="52" fill="#ffe3b0"/>
+  <circle cx="400" cy="330" r="86" fill="#ffce88" opacity="0.25"/>
+  <circle cx="400" cy="330" r="120" fill="#ffb86b" opacity="0.12"/>
+  <rect y="340" width="800" height="260" fill="url(#osea)"/>
+  <!-- sun reflection -->
+  <ellipse cx="400" cy="345" rx="60" ry="7" fill="#ffdf9e" opacity="0.75"/>
+  <ellipse cx="400" cy="365" rx="44" ry="5" fill="#ffdf9e" opacity="0.55"/>
+  <ellipse cx="400" cy="383" rx="30" ry="4" fill="#ffdf9e" opacity="0.4"/>
+  <ellipse cx="400" cy="399" rx="18" ry="3" fill="#ffdf9e" opacity="0.3"/>
+  <!-- waves -->
+  <path d="M0,430 Q100,425 200,430 T400,430 T600,430 T800,430" stroke="#9fc3d8" stroke-width="2" fill="none" opacity="0.35"/>
+  <path d="M0,470 Q120,464 240,470 T480,470 T720,470 T960,470" stroke="#9fc3d8" stroke-width="2" fill="none" opacity="0.28"/>
+  <path d="M0,510 Q140,503 280,510 T560,510 T840,510" stroke="#9fc3d8" stroke-width="2.5" fill="none" opacity="0.2"/>
+  <path d="M0,555 Q160,547 320,555 T640,555 T960,555" stroke="#9fc3d8" stroke-width="3" fill="none" opacity="0.14"/>
+  <!-- birds -->
+  <path d="M180,180 q8,-8 16,0 M196,180 q8,-8 16,0" stroke="#2c3e50" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <path d="M250,140 q6,-6 12,0 M262,140 q6,-6 12,0" stroke="#2c3e50" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.55"/>
+</svg>

@@ -2,6 +2,51 @@
 layout: default
 ---
 
+{%- comment %}
+  照片首页（相册总览）：自动扫描 photos/ 下的子目录，每个子目录即一个相册。
+  把照片放入 photos/<相册名>/ 目录即可，无需为每组照片写文章。
+  相册详情页为二级路径 /photos/<相册名>/。
+{%- endcomment %}
+
+{%- assign img_exts = "jpg,jpeg,png,gif,webp,svg,bmp,avif" | split: "," -%}
+
+{%- comment %} 收集 photos/ 下带 index 页面的相册目录 {% endcomment %}
+{%- assign albums = "" | split: "|" -%}
+{%- for p in site.pages -%}
+  {%- assign parts = p.path | split: "/" -%}
+  {%- if parts.size >= 3 and parts[0] == "photos" -%}
+    {%- assign is_index = false -%}
+    {%- for part in parts offset: 1 -%}
+      {%- if part == "index.md" or part == "index.html" -%}{%- assign is_index = true -%}{%- endif -%}
+    {%- endfor -%}
+    {%- if is_index and parts.size >= 3 -%}
+      {%- assign albumName = parts[1] -%}
+      {%- assign seen = false -%}
+      {%- for a in albums -%}{%- if a[0] == albumName -%}{%- assign seen = true -%}{%- endif -%}{%- endfor -%}
+      {%- unless seen -%}
+        {%- assign entry = "" | split: "|" -%}
+        {%- assign entry = entry | push: albumName | push: p.url -%}
+        {%- assign albums = albums | push: entry -%}
+      {%- endunless -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- comment %} 收集 photos/ 根目录直接放置的图片（散图） {% endcomment %}
+{%- assign rootPics = "" | split: "|" -%}
+{%- for f in site.static_files -%}
+  {%- if f.path contains "/photos/" -%}
+    {%- assign rel = f.path | remove_first: "/photos/" -%}
+    {%- unless rel contains "/" -%}
+      {%- assign ext = f.extname | remove: "." | downcase -%}
+      {%- if img_exts contains ext -%}
+        {%- assign rootPics = rootPics | push: f -%}
+      {%- endif -%}
+    {%- endunless -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign rootPics = rootPics | sort: "name" -%}
+
 <div class="container">
 
   <header class="category-hero c-photos anim">
@@ -12,30 +57,61 @@ layout: default
       <h1>{{ page.title }}</h1>
       <p class="cat-desc">{{ page.description }}</p>
       <div class="cat-meta">
-        <span>{% assign cat_posts = site.posts | where: "category", page.category | sort: "date" | reverse %}共 {{ cat_posts | size }} 组照片</span>
+        <span>{% if albums.size > 0 %}{{ albums.size }} 个相册{% else %}照片{% endif %}</span>
       </div>
     </div>
   </header>
 
   <div class="cat-rule"></div>
 
+  {%- if albums.size > 0 -%}
+
+  {%- comment %} ========== 相册网格 ========== {% endcomment %}
   <div class="gallery-grid">
-    {% for post in cat_posts %}
-    <a class="gallery-item anim d{{ forloop.index | modulo: 4 | plus: 1 }}" href="{{ post.url }}">
-      {% if post.image %}
-      <img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy" />
-      {% endif %}
+    {% for album in albums %}
+      {%- assign aName = album[0] -%}
+      {%- assign aUrl  = album[1] -%}
+      {%- assign aPrefix = "/photos/" | append: aName | append: "/" -%}
+      {%- assign pics = "" | split: "|" -%}
+      {%- for f in site.static_files -%}
+        {%- if f.path contains aPrefix -%}
+          {%- assign ext = f.extname | remove: "." | downcase -%}
+          {%- if img_exts contains ext -%}
+            {%- assign pics = pics | push: f -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- assign pics = pics | sort: "name" -%}
+      {%- assign cover = pics[0] -%}
+    <a class="gallery-item anim d{{ forloop.index | modulo: 4 | plus: 1 }}" href="{{ aUrl }}">
+      {% if cover %}<img src="{{ cover.path }}" alt="{{ aName }}" loading="lazy" />{% endif %}
       <div class="gallery-caption">
-        <h3>{{ post.title }}</h3>
-        <span>{{ post.date | date: "%Y-%m-%d" }}</span>
+        <h3>{{ aName }}</h3>
+        <span>{{ pics | size }} 张</span>
       </div>
     </a>
-    {% else %}
-    <article class="post-card anim">
-      <h3>这里还没有照片</h3>
-      <p class="post-desc">在 <code>_posts/photos/</code> 目录下新建带 <code>image:</code> 字段的文章即可出现在这里。</p>
-    </article>
     {% endfor %}
   </div>
+
+  {%- else -%}
+
+  {%- comment %} ========== 无相册子目录：直接展示根目录图片 ========== {% endcomment %}
+  {%- if rootPics.size > 0 -%}
+  <div class="album-grid" id="album-root">
+    {% for f in rootPics %}
+    <a class="album-photo anim d{{ forloop.index | modulo: 4 | plus: 1 }}"
+       href="{{ f.path }}" data-lightbox="photos" data-caption="{{ f.name }}">
+      <img src="{{ f.path }}" alt="{{ f.name }}" loading="lazy" />
+    </a>
+    {% endfor %}
+  </div>
+  {%- else -%}
+  <article class="post-card anim">
+    <h3>这里还没有照片</h3>
+    <p class="post-desc">把照片放进 <code>photos/&lt;相册名&gt;/</code> 目录，再在相册目录里放一个 <code>index.md</code>（<code>layout: album</code>），照片即会出现在这里。</p>
+  </article>
+  {%- endif -%}
+
+  {%- endif -%}
 
 </div>

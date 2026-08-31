@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="dsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8a45c"/>
+      <stop offset="60%" stop-color="#f2c98a"/>
+      <stop offset="100%" stop-color="#fae3b5"/>
+    </linearGradient>
+    <linearGradient id="dune1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d99a52"/>
+      <stop offset="100%" stop-color="#c07f3d"/>
+    </linearGradient>
+    <linearGradient id="dune2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c4823f"/>
+      <stop offset="100%" stop-color="#a56a31"/>
+    </linearGradient>
+    <linearGradient id="dune3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a06428"/>
+      <stop offset="100%" stop-color="#855121"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#dsky)"/>
+  <circle cx="250" cy="200" r="55" fill="#fff3d6"/>
+  <circle cx="250" cy="200" r="85" fill="#fff3d6" opacity="0.2"/>
+  <!-- dunes far to near -->
+  <path d="M0,360 Q200,290 400,350 T800,330 L800,600 L0,600 Z" fill="url(#dune1)"/>
+  <path d="M0,430 Q250,370 480,430 T800,410 L800,600 L0,600 Z" fill="url(#dune2)"/>
+  <path d="M0,510 Q300,450 550,510 T800,490 L800,600 L0,600 Z" fill="url(#dune3)"/>
+  <!-- dune ridges -->
+  <path d="M0,430 Q250,370 480,430 T800,410" stroke="#8a5a28" stroke-width="2" fill="none" opacity="0.4"/>
+  <path d="M0,510 Q300,450 550,510 T800,490" stroke="#6f4819" stroke-width="2.5" fill="none" opacity="0.4"/>
+  <!-- shadow side -->
+  <path d="M480,430 Q620,398 800,410 L800,600 L480,600 Z" fill="#7a4e1e" opacity="0.25"/>
+  <!-- camel silhouette -->
+  <g fill="#5c3a17" transform="translate(560,470) scale(0.9)">
+    <path d="M0,40 Q-5,25 5,18 L5,0 L10,0 L12,15 Q20,10 28,14 L34,0 L39,0 L38,18 Q46,25 44,40 L38,40 Q38,32 32,28 Q28,40 24,52 L18,52 Q18,40 22,28 Q12,30 8,40 Z"/>
+    <path d="M6,52 L4,64 L8,64 L10,52 Z" />
+    <path d="M22,52 L20,64 L24,64 L26,52 Z" />
+    <path d="M36,52 L34,64 L38,64 L40,52 Z" />
+  </g>
+</svg>

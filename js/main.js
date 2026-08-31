@@ -197,3 +197,97 @@
     initCommentTabs();
   }
 })();
+
+/* ============ 相册 lightbox ============ */
+(function () {
+  "use strict";
+
+  function initLightbox() {
+    var photos = Array.prototype.slice.call(
+      document.querySelectorAll(".album-photo[data-lightbox]")
+    );
+    if (!photos.length) { return; }
+
+    var lb = document.createElement("div");
+    lb.className = "lightbox";
+    lb.setAttribute("role", "dialog");
+    lb.setAttribute("aria-modal", "true");
+    lb.setAttribute("aria-label", "照片查看");
+    lb.innerHTML =
+      '<button type="button" class="lightbox-btn lightbox-prev" aria-label="上一张">&#10094;</button>' +
+      '<button type="button" class="lightbox-btn lightbox-next" aria-label="下一张">&#10095;</button>' +
+      '<button type="button" class="lightbox-close" aria-label="关闭">&#10005;</button>' +
+      '<img alt="" />' +
+      '<div class="lightbox-caption"></div>';
+    document.body.appendChild(lb);
+
+    var imgEl = lb.querySelector("img");
+    var capEl = lb.querySelector(".lightbox-caption");
+    var prevBtn = lb.querySelector(".lightbox-prev");
+    var nextBtn = lb.querySelector(".lightbox-next");
+    var closeBtn = lb.querySelector(".lightbox-close");
+    var current = -1;
+    var currentGroup = null;
+
+    function show(index) {
+      current = index;
+      var a = photos[current];
+      currentGroup = a.getAttribute("data-lightbox");
+      imgEl.src = a.getAttribute("href");
+      imgEl.alt = a.getAttribute("data-caption") || "";
+      capEl.textContent = a.getAttribute("data-caption") || "";
+      lb.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function hide() {
+      lb.classList.remove("is-open");
+      document.body.style.overflow = "";
+      current = -1;
+    }
+
+    function groupPhotos() {
+      return photos.filter(function (a) {
+        return a.getAttribute("data-lightbox") === currentGroup;
+      });
+    }
+
+    function step(delta) {
+      var group = groupPhotos();
+      if (!group.length) { return; }
+      var idx = group.indexOf(photos[current]);
+      var next = (idx + delta + group.length) % group.length;
+      var target = group[next];
+      show(photos.indexOf(target));
+    }
+
+    photos.forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        show(photos.indexOf(a));
+      });
+    });
+
+    prevBtn.addEventListener("click", function () { step(-1); });
+    nextBtn.addEventListener("click", function () { step(1); });
+    closeBtn.addEventListener("click", hide);
+
+    lb.addEventListener("click", function (e) {
+      if (e.target === lb) { hide(); }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (!lb.classList.contains("is-open")) { return; }
+      if (e.key === "Escape") { hide(); }
+      else if (e.key === "ArrowLeft") { step(-1); }
+      else if (e.key === "ArrowRight") { step(1); }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initLightbox);
+  } else {
+    initLightbox();
+  }
+})();
+
