@@ -83,6 +83,7 @@ layout: default
          data-waline-server-url="{{ site.comments.waline.server_url | default: '' }}"
          data-waline-lang="{{ site.comments.waline.lang | default: 'zh-CN' }}"
          data-waline-path="{{ page.url }}">
+      <link rel="stylesheet" href="https://unpkg.com/@waline/client@latest/dist/waline.css" />
       <div id="waline-thread"><p class="comments-loading">正在加载 Waline 评论…</p></div>
     </div>
     {% endif %}

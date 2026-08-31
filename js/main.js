@@ -134,7 +134,7 @@
       else { panel.appendChild(container); }
 
       var s = document.createElement("script");
-      s.src = "https://cdn.staticfile.org/waline/3.5.2/waline.js";
+      s.src = "https://unpkg.com/@waline/client@latest/dist/waline.umd.js";
       s.async = true;
       s.onload = function () {
         if (!(window.Waline && typeof window.Waline.init === "function")) {
