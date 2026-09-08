@@ -732,18 +732,6 @@
     "face_count": 2
   },
   {
-    "filename": "IMG_2672.JPG",
-    "original_filename": "IMG_2672.JPG",
-    "date": "2020年08月23日 11:58",
-    "date_raw": "2020:08:23 11:58:20",
-    "latitude": 39.865050000000004,
-    "longitude": 116.26744722222222,
-    "location": "北京家中",
-    "has_father": false,
-    "has_mother": true,
-    "face_count": 1
-  },
-  {
     "filename": "IMG_2676.JPG",
     "original_filename": "IMG_2676.JPG",
     "date": "2020年09月05日 10:49",
@@ -799,18 +787,6 @@
     "latitude": 39.92019722222222,
     "longitude": 116.3911138888889,
     "location": "北京王府井",
-    "has_father": true,
-    "has_mother": false,
-    "face_count": 1
-  },
-  {
-    "filename": "IMG_1633.jpg",
-    "original_filename": "IMG_1633.HEIC",
-    "date": "2020年11月18日 22:17",
-    "date_raw": "2020:11:18 22:17:52",
-    "latitude": null,
-    "longitude": null,
-    "location": "未知地点",
     "has_father": true,
     "has_mother": false,
     "face_count": 1

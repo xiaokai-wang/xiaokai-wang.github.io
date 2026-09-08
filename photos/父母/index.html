@@ -1,0 +1,1379 @@
+---
+layout: default
+title: 父母
+category: photos
+description: 记录父母的美好时光。共81张照片，含父亲33张、母亲61张、父母同框13张，每张照片均显示拍摄时间与地点。
+---
+
+<style>
+.album-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: #666; text-decoration: none; font-size: 14px; margin-bottom: 20px; }
+.back-link:hover { color: #333; }
+.album-hero { text-align: center; margin-bottom: 30px; }
+.album-hero h1 { font-size: 2em; margin: 0 0 10px; }
+.album-hero p { color: #666; margin: 5px 0; }
+.album-stats { display: flex; justify-content: center; gap: 30px; margin-top: 15px; flex-wrap: wrap; }
+.stat-item { text-align: center; }
+.stat-num { font-size: 1.5em; font-weight: bold; color: #333; }
+.stat-label { font-size: 12px; color: #999; }
+.year-section { margin: 40px 0 20px; }
+.year-title { font-size: 1.4em; font-weight: bold; border-left: 4px solid #4a90d9; padding-left: 12px; margin-bottom: 20px; color: #333; }
+.photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.photo-card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+.photo-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+.photo-card img { width: 100%; height: 210px; object-fit: cover; display: block; }
+.photo-info { padding: 12px 14px; }
+.photo-date { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+.photo-location { font-size: 13px; color: #666; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.photo-tags { display: flex; gap: 6px; }
+.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #e8f0fe; color: #4a90d9; }
+.tag.mother { background: #fce8f0; color: #d94a8a; }
+.tag.both { background: #e8f5e9; color: #4a9d5a; }
+
+/* Lightbox */
+.lightbox-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+.lightbox-overlay.active { display: flex; }
+.lightbox-overlay img { max-width: 90%; max-height: 80vh; object-fit: contain; border-radius: 4px; }
+.lightbox-caption { color: #fff; margin-top: 15px; font-size: 15px; text-align: center; max-width: 80%; }
+.lightbox-close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 36px; cursor: pointer; background: none; border: none; }
+.lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); color: #fff; font-size: 40px; cursor: pointer; background: rgba(0,0,0,0.3); border: none; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.lightbox-prev { left: 20px; }
+.lightbox-next { right: 20px; }
+.lightbox-nav:hover { background: rgba(0,0,0,0.6); }
+
+[data-theme="dark"] .photo-card { background: #1e1e1e; }
+[data-theme="dark"] .photo-date { color: #e0e0e0; }
+[data-theme="dark"] .photo-location { color: #aaa; }
+[data-theme="dark"] .year-title { color: #e0e0e0; }
+[data-theme="dark"] .stat-num { color: #e0e0e0; }
+[data-theme="dark"] .album-hero p { color: #aaa; }
+
+/* 访问验证 */
+.verify-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); z-index: 10000; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+.verify-overlay.hidden { display: none; }
+.verify-box { background: rgba(255,255,255,0.95); border-radius: 16px; padding: 40px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.verify-box .lock-icon { width: 60px; height: 60px; margin: 0 auto 20px; background: #667eea; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.verify-box h2 { margin: 0 0 10px; color: #333; font-size: 1.4em; }
+.verify-box p { color: #666; margin: 0 0 25px; font-size: 14px; line-height: 1.6; }
+.verify-box input { width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; margin-bottom: 15px; outline: none; transition: border-color 0.2s; }
+.verify-box input:focus { border-color: #667eea; }
+.verify-box button { width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: opacity 0.2s; }
+.verify-box button:hover { opacity: 0.9; }
+.verify-error { color: #e74c3c; font-size: 13px; margin-top: 10px; min-height: 18px; }
+.verify-hint { margin-top: 20px; font-size: 12px; color: #999; }
+
+</style>
+
+
+<div class="verify-overlay" id="verifyOverlay">
+  <div class="verify-box">
+    <div class="lock-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h2>私密相册</h2>
+    <p>这是家人的私人照片相册<br/>请输入访问密码后查看</p>
+    <input type="password" id="verifyInput" placeholder="请输入访问密码" onkeydown="if(event.key==='Enter')doVerify()" />
+    <button onclick="doVerify()">进入相册</button>
+    <div class="verify-error" id="verifyError"></div>
+    <div class="verify-hint">验证通过后7天内无需重复验证</div>
+  </div>
+</div>
+
+<div class="album-container" id="albumContent" style="display:none;">
+
+  <a class="back-link" href="/photos/">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    返回照片
+  </a>
+
+  <div class="album-hero">
+    <h1>父母</h1>
+    <p>记录父母的美好时光，每张照片均标注拍摄时间与地点</p>
+    <div class="album-stats">
+      <div class="stat-item"><div class="stat-num">81</div><div class="stat-label">总照片数</div></div>
+      <div class="stat-item"><div class="stat-num">33</div><div class="stat-label">含父亲</div></div>
+      <div class="stat-item"><div class="stat-num">61</div><div class="stat-label">含母亲</div></div>
+      <div class="stat-item"><div class="stat-num">13</div><div class="stat-label">父母同框</div></div>
+    </div>
+  </div>
+
+  <div class="year-section">
+    <div class="year-title">未知年 <span style="font-size:0.6em;color:#999;font-weight:normal;">(1张)</span></div>
+    <div class="photo-grid">
+      <div class="photo-card" onclick="openLightbox(0)">
+        <img src="IMG_1253.JPG" alt="IMG_1253.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <nil>
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            未知地点
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="year-section">
+    <div class="year-title">2023年 <span style="font-size:0.6em;color:#999;font-weight:normal;">(10张)</span></div>
+    <div class="photo-grid">
+      <div class="photo-card" onclick="openLightbox(1)">
+        <img src="IMG_2517 (1).JPG" alt="IMG_2517 (1).JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2023年01月20日 12:32
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 37.8391, 114.9161
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(2)">
+        <img src="IMG_2518 (1).JPG" alt="IMG_2518 (1).JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2023年01月20日 12:32
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 37.8391, 114.9160
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(3)">
+        <img src="IMG_2524.JPG" alt="IMG_2524.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2023年01月20日 12:35
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 37.8391, 114.9160
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(4)">
+        <img src="IMG_2677 (1).JPG" alt="IMG_2677 (1).JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2023年06月10日 12:34
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 39.7014, 119.3360
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(5)">
+        <img src="IMG_2680.JPG" alt="IMG_2680.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2023年06月10日 12:35
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 39.7014, 119.3360
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(6)">
+        <img src="IMG_2820.JPG" alt="IMG_2820.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2023年09月29日 14:47
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 37.5735, 121.2418
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(7)">
+        <img src="IMG_2821.JPG" alt="IMG_2821.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2023年09月29日 14:47
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 37.5735, 121.2418
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(8)">
+        <img src="IMG_2824.JPG" alt="IMG_2824.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2023年09月29日 15:19
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 37.5736, 121.2476
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(9)">
+        <img src="IMG_2828.JPG" alt="IMG_2828.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2023年09月29日 15:21
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 37.5736, 121.2477
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(10)">
+        <img src="IMG_2830.JPG" alt="IMG_2830.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2023年09月29日 15:21
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 37.5736, 121.2477
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="year-section">
+    <div class="year-title">2022年 <span style="font-size:0.6em;color:#999;font-weight:normal;">(1张)</span></div>
+    <div class="photo-grid">
+      <div class="photo-card" onclick="openLightbox(11)">
+        <img src="IMG_2290.jpg" alt="IMG_2290.jpg" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2022年10月03日 17:02
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            未知地点
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="year-section">
+    <div class="year-title">2021年 <span style="font-size:0.6em;color:#999;font-weight:normal;">(3张)</span></div>
+    <div class="photo-grid">
+      <div class="photo-card" onclick="openLightbox(12)">
+        <img src="IMG_1696.jpg" alt="IMG_1696.jpg" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2021年01月03日 10:30
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            未知地点
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(13)">
+        <img src="IMG_1709.jpg" alt="IMG_1709.jpg" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2021年01月03日 12:08
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            未知地点
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(14)">
+        <img src="IMG_1797.jpg" alt="IMG_1797.jpg" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2021年03月27日 11:51
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            未知地点
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="year-section">
+    <div class="year-title">2020年 <span style="font-size:0.6em;color:#999;font-weight:normal;">(11张)</span></div>
+    <div class="photo-grid">
+      <div class="photo-card" onclick="openLightbox(15)">
+        <img src="IMG_2608.JPG" alt="IMG_2608.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年03月07日 17:32
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京家中
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(16)">
+        <img src="IMG_2635.JPG" alt="IMG_2635.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年04月11日 10:39
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(17)">
+        <img src="IMG_2642.JPG" alt="IMG_2642.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年04月11日 10:41
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(18)">
+        <img src="IMG_2650.JPG" alt="IMG_2650.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年04月18日 13:04
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京昌平
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(19)">
+        <img src="IMG_2653.JPG" alt="IMG_2653.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年04月27日 18:35
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            河北石家庄
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(20)">
+        <img src="IMG_2654.JPG" alt="IMG_2654.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年04月27日 18:35
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            河北石家庄
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(21)">
+        <img src="IMG_2676.JPG" alt="IMG_2676.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年09月05日 10:49
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京什刹海
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(22)">
+        <img src="IMG_2677.JPG" alt="IMG_2677.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年09月06日 15:06
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(23)">
+        <img src="IMG_2679.JPG" alt="IMG_2679.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年09月06日 15:06
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(24)">
+        <img src="IMG_2681.JPG" alt="IMG_2681.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年09月06日 16:55
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 39.9193, 116.3918
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(25)">
+        <img src="IMG_2683.JPG" alt="IMG_2683.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2020年09月06日 16:55
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京王府井
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="year-section">
+    <div class="year-title">2019年 <span style="font-size:0.6em;color:#999;font-weight:normal;">(17张)</span></div>
+    <div class="photo-grid">
+      <div class="photo-card" onclick="openLightbox(26)">
+        <img src="IMG_2293.JPG" alt="IMG_2293.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年06月09日 09:50
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            未知地点
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(27)">
+        <img src="IMG_2294.JPG" alt="IMG_2294.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年06月09日 09:50
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            未知地点
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(28)">
+        <img src="IMG_2170.JPG" alt="IMG_2170.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年02月23日 16:04
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京王府井
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(29)">
+        <img src="IMG_2172.JPG" alt="IMG_2172.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年02月23日 16:05
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京王府井
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(30)">
+        <img src="IMG_2180.JPG" alt="IMG_2180.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年02月23日 17:39
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京王府井
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(31)">
+        <img src="IMG_2182.JPG" alt="IMG_2182.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年02月23日 17:39
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京王府井
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(32)">
+        <img src="IMG_2183.JPG" alt="IMG_2183.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年02月23日 18:47
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(33)">
+        <img src="IMG_2184.JPG" alt="IMG_2184.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年02月23日 18:50
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(34)">
+        <img src="IMG_2249.JPG" alt="IMG_2249.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年04月21日 11:59
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京丰台
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(35)">
+        <img src="IMG_2351.JPG" alt="IMG_2351.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年08月17日 15:42
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京国贸CBD
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(36)">
+        <img src="IMG_2356.JPG" alt="IMG_2356.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年08月17日 15:48
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京国贸CBD
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(37)">
+        <img src="IMG_2360.JPG" alt="IMG_2360.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年08月17日 15:48
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京国贸CBD
+          </div>
+          <div class="photo-tags"><span class="tag both">父母同框</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(38)">
+        <img src="IMG_2485.JPG" alt="IMG_2485.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年11月30日 10:27
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            浙江杭州
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(39)">
+        <img src="IMG_2487.JPG" alt="IMG_2487.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年11月30日 10:27
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            浙江杭州
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(40)">
+        <img src="IMG_2489.JPG" alt="IMG_2489.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年11月30日 14:39
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            浙江杭州
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(41)">
+        <img src="IMG_2499.JPG" alt="IMG_2499.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年12月28日 12:25
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京房山
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(42)">
+        <img src="IMG_2508.JPG" alt="IMG_2508.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2019年12月28日 14:10
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京房山
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="year-section">
+    <div class="year-title">2018年 <span style="font-size:0.6em;color:#999;font-weight:normal;">(31张)</span></div>
+    <div class="photo-grid">
+      <div class="photo-card" onclick="openLightbox(43)">
+        <img src="IMG_1887.JPG" alt="IMG_1887.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 10:29
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            未知地点
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(44)">
+        <img src="IMG_1795.JPG" alt="IMG_1795.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年03月24日 16:34
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京南城
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(45)">
+        <img src="IMG_1798.JPG" alt="IMG_1798.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年03月24日 16:34
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京南城
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(46)">
+        <img src="IMG_1866.JPG" alt="IMG_1866.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月23日 19:20
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天坛附近
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(47)">
+        <img src="IMG_1869.JPG" alt="IMG_1869.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月23日 19:21
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天坛附近
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(48)">
+        <img src="IMG_1870.JPG" alt="IMG_1870.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月23日 19:21
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天坛附近
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(49)">
+        <img src="IMG_1878.JPG" alt="IMG_1878.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 09:50
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京景山公园
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(50)">
+        <img src="IMG_1881.JPG" alt="IMG_1881.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 10:13
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京景山公园
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(51)">
+        <img src="IMG_1883.JPG" alt="IMG_1883.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 10:14
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京景山公园
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(52)">
+        <img src="IMG_1885.JPG" alt="IMG_1885.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 10:27
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京景山公园
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(53)">
+        <img src="IMG_1886.JPG" alt="IMG_1886.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 10:27
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京景山公园
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(54)">
+        <img src="IMG_1888.JPG" alt="IMG_1888.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 10:31
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京景山公园
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(55)">
+        <img src="IMG_1892.JPG" alt="IMG_1892.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 11:49
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 39.9894, 116.2717
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(56)">
+        <img src="IMG_1893.JPG" alt="IMG_1893.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 11:50
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 39.9895, 116.2715
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(57)">
+        <img src="IMG_1895.JPG" alt="IMG_1895.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 19:17
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京家中
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(58)">
+        <img src="IMG_1897.JPG" alt="IMG_1897.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 19:17
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京家中
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(59)">
+        <img src="IMG_1898.JPG" alt="IMG_1898.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 19:17
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京家中
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(60)">
+        <img src="IMG_1899.JPG" alt="IMG_1899.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 19:17
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京家中
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(61)">
+        <img src="IMG_1902.JPG" alt="IMG_1902.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年06月25日 19:17
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京家中
+          </div>
+          <div class="photo-tags"><span class="tag">父亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(62)">
+        <img src="IMG_1916.JPG" alt="IMG_1916.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年07月21日 22:56
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京家中
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(63)">
+        <img src="IMG_2019.JPG" alt="IMG_2019.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年10月07日 16:21
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 39.8749, 116.1867
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(64)">
+        <img src="IMG_2022.JPG" alt="IMG_2022.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年10月07日 16:27
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 39.8768, 116.1879
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(65)">
+        <img src="IMG_2024.JPG" alt="IMG_2024.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年10月07日 16:27
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 39.8768, 116.1879
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(66)">
+        <img src="IMG_2068.JPG" alt="IMG_2068.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年12月16日 11:31
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京大兴
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(67)">
+        <img src="IMG_2073.JPG" alt="IMG_2073.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年12月16日 11:35
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京大兴
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(68)">
+        <img src="IMG_2075.JPG" alt="IMG_2075.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年12月16日 11:35
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京大兴
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(69)">
+        <img src="IMG_2083.JPG" alt="IMG_2083.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年12月16日 11:42
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京大兴
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(70)">
+        <img src="IMG_2090.JPG" alt="IMG_2090.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年12月16日 12:17
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京大兴
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(71)">
+        <img src="IMG_2091.JPG" alt="IMG_2091.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年12月16日 12:17
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京大兴
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(72)">
+        <img src="IMG_2095.JPG" alt="IMG_2095.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年12月16日 12:18
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京大兴
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(73)">
+        <img src="IMG_2110.JPG" alt="IMG_2110.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2018年12月23日 16:12
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 39.8262, 116.2959
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="year-section">
+    <div class="year-title">2017年 <span style="font-size:0.6em;color:#999;font-weight:normal;">(7张)</span></div>
+    <div class="photo-grid">
+      <div class="photo-card" onclick="openLightbox(74)">
+        <img src="IMG_1691.JPG" alt="IMG_1691.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2017年10月29日 11:41
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京南城
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(75)">
+        <img src="IMG_1741.JPG" alt="IMG_1741.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2017年12月23日 16:41
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(76)">
+        <img src="IMG_1742.JPG" alt="IMG_1742.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2017年12月23日 16:45
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(77)">
+        <img src="IMG_1743.JPG" alt="IMG_1743.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2017年12月23日 16:45
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(78)">
+        <img src="IMG_1747.JPG" alt="IMG_1747.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2017年12月23日 17:03
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(79)">
+        <img src="IMG_1748.JPG" alt="IMG_1748.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2017年12月23日 17:03
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            北京天安门广场
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+      <div class="photo-card" onclick="openLightbox(80)">
+        <img src="IMG_1750.JPG" alt="IMG_1750.JPG" loading="lazy" />
+        <div class="photo-info">
+          <div class="photo-date">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            2017年12月23日 18:03
+          </div>
+          <div class="photo-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            坐标: 39.9084, 116.3675
+          </div>
+          <div class="photo-tags"><span class="tag mother">母亲</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="lightbox-overlay" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)">&#8249;</button>
+  <img id="lightbox-img" src="" alt="" />
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+  <button class="lightbox-nav lightbox-next" onclick="navLightbox(1)">&#8250;</button>
+</div>
+
+<script>
+var photos = [{"filename": "IMG_1253.JPG", "date": "<nil>", "location": "未知地点"}, {"filename": "IMG_2517 (1).JPG", "date": "2023年01月20日 12:32", "location": "坐标: 37.8391, 114.9161"}, {"filename": "IMG_2518 (1).JPG", "date": "2023年01月20日 12:32", "location": "坐标: 37.8391, 114.9160"}, {"filename": "IMG_2524.JPG", "date": "2023年01月20日 12:35", "location": "坐标: 37.8391, 114.9160"}, {"filename": "IMG_2677 (1).JPG", "date": "2023年06月10日 12:34", "location": "坐标: 39.7014, 119.3360"}, {"filename": "IMG_2680.JPG", "date": "2023年06月10日 12:35", "location": "坐标: 39.7014, 119.3360"}, {"filename": "IMG_2820.JPG", "date": "2023年09月29日 14:47", "location": "坐标: 37.5735, 121.2418"}, {"filename": "IMG_2821.JPG", "date": "2023年09月29日 14:47", "location": "坐标: 37.5735, 121.2418"}, {"filename": "IMG_2824.JPG", "date": "2023年09月29日 15:19", "location": "坐标: 37.5736, 121.2476"}, {"filename": "IMG_2828.JPG", "date": "2023年09月29日 15:21", "location": "坐标: 37.5736, 121.2477"}, {"filename": "IMG_2830.JPG", "date": "2023年09月29日 15:21", "location": "坐标: 37.5736, 121.2477"}, {"filename": "IMG_2290.jpg", "date": "2022年10月03日 17:02", "location": "未知地点"}, {"filename": "IMG_1696.jpg", "date": "2021年01月03日 10:30", "location": "未知地点"}, {"filename": "IMG_1709.jpg", "date": "2021年01月03日 12:08", "location": "未知地点"}, {"filename": "IMG_1797.jpg", "date": "2021年03月27日 11:51", "location": "未知地点"}, {"filename": "IMG_2608.JPG", "date": "2020年03月07日 17:32", "location": "北京家中"}, {"filename": "IMG_2635.JPG", "date": "2020年04月11日 10:39", "location": "北京天安门广场"}, {"filename": "IMG_2642.JPG", "date": "2020年04月11日 10:41", "location": "北京天安门广场"}, {"filename": "IMG_2650.JPG", "date": "2020年04月18日 13:04", "location": "北京昌平"}, {"filename": "IMG_2653.JPG", "date": "2020年04月27日 18:35", "location": "河北石家庄"}, {"filename": "IMG_2654.JPG", "date": "2020年04月27日 18:35", "location": "河北石家庄"}, {"filename": "IMG_2676.JPG", "date": "2020年09月05日 10:49", "location": "北京什刹海"}, {"filename": "IMG_2677.JPG", "date": "2020年09月06日 15:06", "location": "北京天安门广场"}, {"filename": "IMG_2679.JPG", "date": "2020年09月06日 15:06", "location": "北京天安门广场"}, {"filename": "IMG_2681.JPG", "date": "2020年09月06日 16:55", "location": "坐标: 39.9193, 116.3918"}, {"filename": "IMG_2683.JPG", "date": "2020年09月06日 16:55", "location": "北京王府井"}, {"filename": "IMG_2293.JPG", "date": "2019年06月09日 09:50", "location": "未知地点"}, {"filename": "IMG_2294.JPG", "date": "2019年06月09日 09:50", "location": "未知地点"}, {"filename": "IMG_2170.JPG", "date": "2019年02月23日 16:04", "location": "北京王府井"}, {"filename": "IMG_2172.JPG", "date": "2019年02月23日 16:05", "location": "北京王府井"}, {"filename": "IMG_2180.JPG", "date": "2019年02月23日 17:39", "location": "北京王府井"}, {"filename": "IMG_2182.JPG", "date": "2019年02月23日 17:39", "location": "北京王府井"}, {"filename": "IMG_2183.JPG", "date": "2019年02月23日 18:47", "location": "北京天安门广场"}, {"filename": "IMG_2184.JPG", "date": "2019年02月23日 18:50", "location": "北京天安门广场"}, {"filename": "IMG_2249.JPG", "date": "2019年04月21日 11:59", "location": "北京丰台"}, {"filename": "IMG_2351.JPG", "date": "2019年08月17日 15:42", "location": "北京国贸CBD"}, {"filename": "IMG_2356.JPG", "date": "2019年08月17日 15:48", "location": "北京国贸CBD"}, {"filename": "IMG_2360.JPG", "date": "2019年08月17日 15:48", "location": "北京国贸CBD"}, {"filename": "IMG_2485.JPG", "date": "2019年11月30日 10:27", "location": "浙江杭州"}, {"filename": "IMG_2487.JPG", "date": "2019年11月30日 10:27", "location": "浙江杭州"}, {"filename": "IMG_2489.JPG", "date": "2019年11月30日 14:39", "location": "浙江杭州"}, {"filename": "IMG_2499.JPG", "date": "2019年12月28日 12:25", "location": "北京房山"}, {"filename": "IMG_2508.JPG", "date": "2019年12月28日 14:10", "location": "北京房山"}, {"filename": "IMG_1887.JPG", "date": "2018年06月25日 10:29", "location": "未知地点"}, {"filename": "IMG_1795.JPG", "date": "2018年03月24日 16:34", "location": "北京南城"}, {"filename": "IMG_1798.JPG", "date": "2018年03月24日 16:34", "location": "北京南城"}, {"filename": "IMG_1866.JPG", "date": "2018年06月23日 19:20", "location": "北京天坛附近"}, {"filename": "IMG_1869.JPG", "date": "2018年06月23日 19:21", "location": "北京天坛附近"}, {"filename": "IMG_1870.JPG", "date": "2018年06月23日 19:21", "location": "北京天坛附近"}, {"filename": "IMG_1878.JPG", "date": "2018年06月25日 09:50", "location": "北京景山公园"}, {"filename": "IMG_1881.JPG", "date": "2018年06月25日 10:13", "location": "北京景山公园"}, {"filename": "IMG_1883.JPG", "date": "2018年06月25日 10:14", "location": "北京景山公园"}, {"filename": "IMG_1885.JPG", "date": "2018年06月25日 10:27", "location": "北京景山公园"}, {"filename": "IMG_1886.JPG", "date": "2018年06月25日 10:27", "location": "北京景山公园"}, {"filename": "IMG_1888.JPG", "date": "2018年06月25日 10:31", "location": "北京景山公园"}, {"filename": "IMG_1892.JPG", "date": "2018年06月25日 11:49", "location": "坐标: 39.9894, 116.2717"}, {"filename": "IMG_1893.JPG", "date": "2018年06月25日 11:50", "location": "坐标: 39.9895, 116.2715"}, {"filename": "IMG_1895.JPG", "date": "2018年06月25日 19:17", "location": "北京家中"}, {"filename": "IMG_1897.JPG", "date": "2018年06月25日 19:17", "location": "北京家中"}, {"filename": "IMG_1898.JPG", "date": "2018年06月25日 19:17", "location": "北京家中"}, {"filename": "IMG_1899.JPG", "date": "2018年06月25日 19:17", "location": "北京家中"}, {"filename": "IMG_1902.JPG", "date": "2018年06月25日 19:17", "location": "北京家中"}, {"filename": "IMG_1916.JPG", "date": "2018年07月21日 22:56", "location": "北京家中"}, {"filename": "IMG_2019.JPG", "date": "2018年10月07日 16:21", "location": "坐标: 39.8749, 116.1867"}, {"filename": "IMG_2022.JPG", "date": "2018年10月07日 16:27", "location": "坐标: 39.8768, 116.1879"}, {"filename": "IMG_2024.JPG", "date": "2018年10月07日 16:27", "location": "坐标: 39.8768, 116.1879"}, {"filename": "IMG_2068.JPG", "date": "2018年12月16日 11:31", "location": "北京大兴"}, {"filename": "IMG_2073.JPG", "date": "2018年12月16日 11:35", "location": "北京大兴"}, {"filename": "IMG_2075.JPG", "date": "2018年12月16日 11:35", "location": "北京大兴"}, {"filename": "IMG_2083.JPG", "date": "2018年12月16日 11:42", "location": "北京大兴"}, {"filename": "IMG_2090.JPG", "date": "2018年12月16日 12:17", "location": "北京大兴"}, {"filename": "IMG_2091.JPG", "date": "2018年12月16日 12:17", "location": "北京大兴"}, {"filename": "IMG_2095.JPG", "date": "2018年12月16日 12:18", "location": "北京大兴"}, {"filename": "IMG_2110.JPG", "date": "2018年12月23日 16:12", "location": "坐标: 39.8262, 116.2959"}, {"filename": "IMG_1691.JPG", "date": "2017年10月29日 11:41", "location": "北京南城"}, {"filename": "IMG_1741.JPG", "date": "2017年12月23日 16:41", "location": "北京天安门广场"}, {"filename": "IMG_1742.JPG", "date": "2017年12月23日 16:45", "location": "北京天安门广场"}, {"filename": "IMG_1743.JPG", "date": "2017年12月23日 16:45", "location": "北京天安门广场"}, {"filename": "IMG_1747.JPG", "date": "2017年12月23日 17:03", "location": "北京天安门广场"}, {"filename": "IMG_1748.JPG", "date": "2017年12月23日 17:03", "location": "北京天安门广场"}, {"filename": "IMG_1750.JPG", "date": "2017年12月23日 18:03", "location": "坐标: 39.9084, 116.3675"}];
+var currentIdx = 0;
+
+function openLightbox(idx) {
+  currentIdx = idx;
+  updateLightbox();
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function navLightbox(dir) {
+  currentIdx = (currentIdx + dir + photos.length) % photos.length;
+  updateLightbox();
+}
+
+function updateLightbox() {
+  var p = photos[currentIdx];
+  document.getElementById('lightbox-img').src = p.filename;
+  document.getElementById('lightbox-img').alt = p.filename;
+  var caption = p.date;
+  if (p.location) caption += ' · ' + p.location;
+  document.getElementById('lightbox-caption').textContent = caption;
+}
+
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('lightbox').classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navLightbox(-1);
+  if (e.key === 'ArrowRight') navLightbox(1);
+});
+
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+
+// 访问验证
+var ACCESS_PASSWORD = '10231230';
+var VERIFY_KEY = 'parents_album_verified';
+var VERIFY_DAYS = 7;
+
+function isVerified() {
+  try {
+    var data = localStorage.getItem(VERIFY_KEY);
+    if (!data) return false;
+    var obj = JSON.parse(data);
+    var expire = obj.time + VERIFY_DAYS * 24 * 3600 * 1000;
+    return Date.now() < expire;
+  } catch(e) { return false; }
+}
+
+function setVerified() {
+  try {
+    localStorage.setItem(VERIFY_KEY, JSON.stringify({time: Date.now()}));
+  } catch(e) {}
+}
+
+function showAlbum() {
+  document.getElementById('verifyOverlay').classList.add('hidden');
+  document.getElementById('albumContent').style.display = '';
+}
+
+function doVerify() {
+  var input = document.getElementById('verifyInput');
+  var error = document.getElementById('verifyError');
+  if (input.value === ACCESS_PASSWORD) {
+    setVerified();
+    showAlbum();
+  } else {
+    error.textContent = '密码错误，请重试';
+    input.value = '';
+    input.focus();
+    setTimeout(function(){ error.textContent = ''; }, 3000);
+  }
+}
+
+if (isVerified()) {
+  showAlbum();
+} else {
+  document.getElementById('verifyInput').focus();
+}
+
+</script>
